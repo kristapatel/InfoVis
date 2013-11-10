@@ -5,21 +5,21 @@
  */
 public class Medalist {
 
-	public enum Medal {
+	public static enum Medal {
 		GOLD, SILVER, BRONZE;
 	}
 	
 	int year;
 	float score;
-	String medalist;
+	String athlete;
 	String country;
 	Medal medal;
 	
-	public Medalist(int year, float score, String medalist, String country, Medal medal)
+	public Medalist(int year, float score, String athlete, String country, Medal medal)
 	{
 		this.year = year;
 		this.score = score;
-		this.medalist = medalist;
+		this.athlete = athlete;
 		this.country = country;
 		this.medal = medal;
 	}

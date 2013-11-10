@@ -9,10 +9,7 @@ public class Dot {
 
 	PApplet papa;	// reference to Olympia to allow use of Processing library
 	
-	static final int Au = 0xFFFFD700;	// gold
-	static final int Ag = 0xFFC0C0C0;	// silver
-	static final int Cu = 0xFFFF69B4;	// bronze
-	static final int Fe = 0xFFFF0000;	// highlight
+	static final int colors[] = { 0xFFFFD700, 0xFFC0C0C0, 0xFFDA8A67 };
 	static final float radius = 8;
 	
 	boolean highlighted = false;
@@ -28,12 +25,22 @@ public class Dot {
 	 * @param medalist the lucky winner
 	 * @param papa reference to Olympia PApplet
 	 */
-	public Dot(float x, float y, Medalist medalist[], PApplet papa)
+	public Dot(PApplet papa, float x, float y, Medalist medalist[])
 	{
+		this.papa = papa;
 		this.x = x;
 		this.y = y;
 		this.medalist = medalist;
-		this.papa = papa;
+	}
+	
+	public void addMedalist(Medalist medalist)
+	{
+		Medalist medalists[] = new Medalist[this.medalist.length];
+		
+		for(int i = 0; i < medalists.length - 1; i++)
+			medalists[i] = this.medalist[i];
+		
+		medalists[medalists.length - 1] = medalist;
 	}
 	
 	/**
@@ -41,8 +48,14 @@ public class Dot {
 	 */
 	public void draw()
 	{
+		// if(medalist[0].score <= 0) return;
+		
+		if(highlighted)
+			papa.fill(0xFFFF0000);	// future DoD
+		else
+			papa.fill(colors[medalist[0].medal.ordinal()]);
+
 		papa.noStroke();
-		papa.fill(highlighted ? Fe : Au);
 		papa.ellipse(x, y, radius*2, radius*2);
 	}
 	
