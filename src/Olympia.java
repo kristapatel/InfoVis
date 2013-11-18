@@ -11,40 +11,20 @@ public class Olympia extends PApplet {
 
 	private static final long serialVersionUID = 1L;
 	
-	ArrayList<Dot> goldDots = new ArrayList<Dot>();
+	final int summer = 0, 
+			  winter = 1;
+	
+	int yscale = 0;
+	
+	ArrayList<Dot> goldDots   = new ArrayList<Dot>();
 	ArrayList<Dot> silverDots = new ArrayList<Dot>();
 	ArrayList<Dot> bronzeDots = new ArrayList<Dot>();
 	
 	Graphrame grapheme;
 	
-	int season = 0;
-	int yScale = 1;
-	
-	public static void main(String args[])
+	public static void main(String[] args)
 	{
 		PApplet.main(new String[] { "Olympia" });
-	}
-	
-	public void load(String filename)
-	{
-		String things[] = loadStrings(filename);
-		float scores[] = new float[100];
-		
-		int i = 0;
-		for(String thing : things)
-		{
-			String sub[] = thing.split(",");
-			scores[i++] = Float.parseFloat(sub[5]);
-			addDot(sub);
-		}
-		
-		grapheme = new Graphrame(this, 100, 100);
-		grapheme.draw();
-		
-		grapheme.scores = scores;
-		float xs[] = grapheme.xTicks(season);
-		float ys[] = grapheme.yTicks(yScale, 11);		
-		plantDots(xs, ys);
 	}
 
 	public void setup()
@@ -52,29 +32,86 @@ public class Olympia extends PApplet {
 		size(1280, 800);
 		background(255);
 		textSize(11);
-		load("Book2.csv");
+		
+		grapheme = new Graphrame(this);
+		loadSet("Book1.csv");
 	}
 	
 	public void draw()
 	{
-		for(Dot dot : bronzeDots)
-			dot.draw();
-		for(Dot dot : silverDots)
-			dot.draw();
-		for(Dot dot : goldDots)
-			dot.draw();
+		background(255);	// refresh only on mouseMoved()
+		
+		grapheme.draw();
+		drawDots(goldDots);
+		drawDots(silverDots);
+		drawDots(bronzeDots);
 	}
 	
 	public void mouseMoved()
 	{
-		for(Dot dot : goldDots)
-			dot.highlight();
-		for(Dot dot : silverDots)
-			dot.highlight();
-		for(Dot dot : bronzeDots)
+		highlightDots(goldDots);
+		highlightDots(silverDots);
+		highlightDots(bronzeDots);
+	}
+	
+	public void drawDots(ArrayList<Dot> dotList)
+	{
+		connektor(dotList);
+		for(Dot dot : dotList)
+			dot.draw();
+	}
+	
+	public void highlightDots(ArrayList<Dot> dotList)
+	{
+		for(Dot dot : dotList)
 			dot.highlight();
 	}
 	
+	/**
+	 * This is to draw the connecting lines.
+	 * 
+	 * @param dotList
+	 */
+	public void connektor(ArrayList<Dot> dotList)
+	{
+		noFill();
+		strokeWeight(2f);
+		strokeJoin(PConstants.ROUND);
+		
+		beginShape();
+		for(Dot dot : dotList) {
+			vertex(dot.x, dot.y);
+		}
+		endShape();
+	}
+	
+	public void loadSet(String filename)
+	{
+		String[] things = loadStrings(filename);
+		float[] scores = new float[things.length];
+		
+		int i = 0;
+		for(String thing : things)
+		{
+			String[] sub = thing.split(",");
+			scores[i++] = Float.parseFloat(sub[5]);
+			addDot(sub);
+		}
+		
+		grapheme.setScores(scores);
+		grapheme.setXTicks(summer);
+		grapheme.setYTicks(yscale, 10);
+		
+		plantDots(goldDots);
+		plantDots(silverDots);
+		plantDots(bronzeDots);
+	}
+	
+	/**
+	 * This is to add a Dot to the appropriate list given a String array of the things.
+	 * 
+	 * @param sub
+	 */
 	public void addDot(String[] sub)
 	{
 		float score = Float.parseFloat(sub[5]);
@@ -103,79 +140,26 @@ public class Olympia extends PApplet {
 			index = 2;
 			dotList = bronzeDots;
 		}
-		
 		medalist = new Medalist(year, score, athlete, country, Medalist.Medal.values()[index]);
 		
 		for(Dot d : dotList)
 		{
-			if(d.medalist[0].year == medalist.year && d.medalist[0].medal == medalist.medal)
+			if(d.medalist.year == medalist.year && d.medalist.medal == medalist.medal)
 			{
-				d.addMedalist(medalist);
+				d.addAthlete(medalist.athlete, medalist.country);
 				return;
 			}
 		}
-		
-		dotList.add(new Dot(this, 0, 0, new Medalist[] { medalist }));
+		dotList.add(new Dot(this, grapheme, 0, 0, medalist));
 	}
 	
-	public void plantDots(float xs[], float ys[])
+	/**
+	 * This is to set the x/y-coordinates of each Dot.
+	 * @param dotList
+	 */
+	public void plantDots(ArrayList<Dot> dotList)
 	{
-		// for each dot in each list
-		// look at the year
-		// find index of that year in static year array
-		// use that to index x's
-		for(Dot d : goldDots) {
-			d.x = xs[grapheme.indexOfYear(season, d.medalist[0].year)];
-		}
-		for(Dot d : silverDots) {
-			d.x = xs[grapheme.indexOfYear(season, d.medalist[0].year)];
-		}
-		for(Dot d : bronzeDots) {
-			d.x = xs[grapheme.indexOfYear(season, d.medalist[0].year)];
-		}
-		
-		// to find y's, calculate position between smallest and largest in y's
-		// 
-		// use all x/y indices to draw connectors
-		// (bottom of graph) + (ratio of score to max score)*(vertical area) + (the initial vertical offset, crudely calculated)
-		float minY = yScale == 0 ? (grapheme.y + grapheme.height) : ys[0];
-		float maxY = ys[ys.length - 1];
-		for(Dot d : goldDots) {
-			d.y = (grapheme.y + grapheme.height) - ((d.medalist[0].score - grapheme.minS)/(grapheme.maxS - grapheme.minS))*(minY - maxY) + (ys[1] - ys[0]);
-		}
-		for(Dot d : silverDots) {
-			d.y = (grapheme.y + grapheme.height) - ((d.medalist[0].score - grapheme.minS)/(grapheme.maxS - grapheme.minS))*(minY - maxY) + (ys[1] - ys[0]);
-		}
-		for(Dot d : bronzeDots) {
-			d.y = (grapheme.y + grapheme.height) - ((d.medalist[0].score - grapheme.minS)/(grapheme.maxS - grapheme.minS))*(minY - maxY) + (ys[1] - ys[0]);
-		}
-		
-//		papa.noFill();
-//		papa.strokeWeight(4f);
-//		papa.strokeJoin(PConstants.MITER);
-//		papa.beginShape();
-//		papa.vertex(x, y);
-//		papa.vertex(x, y + height);
-//		papa.vertex(x + width, y + height);
-//		papa.endShape();
-		
-		noFill();
-		strokeWeight(2f);
-		strokeJoin(PConstants.ROUND);
-		
-		beginShape();
-		for(Dot d : goldDots) {
-			vertex(d.x, d.y);
-		} endShape();
-		
-		beginShape();
-		for(Dot d : silverDots) {
-			vertex(d.x, d.y);
-		} endShape();
-		
-		beginShape();
-		for(Dot d : bronzeDots) {
-			vertex(d.x, d.y);
-		} endShape();
+		for(Dot dot : dotList)
+			grapheme.plantDot(dot);
 	}
 }

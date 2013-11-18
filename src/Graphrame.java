@@ -10,35 +10,66 @@ public class Graphrame {
 
 	PApplet papa;	// reference to Olympia to allow use of Processing library
 	
-	int[] summers = { 1900, 1904, 1908, 1912, 1916, 1920, 1924, 
-					  1928, 1932, 1936, 1940, 1944, 1948, 1952, 
-					  1956, 1960, 1964, 1968, 1972, 1976, 1980, 
-					  1984, 1988, 1992, 1996, 2000, 2004, 2008 };	// ignore 1906
+	static int[] summers = { 1900, 1904, 1908, 1912, 1916, 1920, 1924, 
+							 1928, 1932, 1936, 1940, 1944, 1948, 1952, 
+							 1956, 1960, 1964, 1968, 1972, 1976, 1980, 
+							 1984, 1988, 1992, 1996, 2000, 2004, 2008 };	// ignore 1906
 	
-	int[] winters = { 1924, 1928, 1932, 1936, 1940, 1944, 1948, 
-					  1952, 1956, 1960, 1964, 1968, 1972, 1976, 
-					  1980, 1984, 1988, 1992, 1994, 1998, 2002, 2006 };
+	static int[] winters = { 1924, 1928, 1932, 1936, 1940, 1944, 1948, 
+							 1952, 1956, 1960, 1964, 1968, 1972, 1976, 
+							 1980, 1984, 1988, 1992, 1994, 1998, 2002, 2006 };
 	
-	int width = 1000, height = 600;
-	float x, y;
-	float scores[];
-	float minS, maxS;
+	float x = 100, 
+		  y = 100, 
+	  	  h = 600, 
+		  w = 1000;
+	
+	int[] years;	// set with xTicks
+	
+	int yscale;		// set with yTicks
+	
+	float lbound, ubound;	// set with yTicks
+	float[] scores;
+	
+	float[] xTicks, yTicks;
+	float[] yLabels;		// set with yTicks
+	
+	
 
 	/**
 	 * Constructor.
 	 * 
-	 * @param x master x-coordinate
-	 * @param y master y-coordinate
-	 * @param golds for gold winners
-	 * @param silvers for silver winners
-	 * @param bronzes for bronze losers
 	 * @param papa reference to Olympia PApplet
 	 */
-	public Graphrame(PApplet papa, float x, float y)
+	public Graphrame(PApplet papa)
 	{
 		this.papa = papa;
-		this.x = x;
-		this.y = y;
+	}
+
+	/**
+	 * Crudely returns index of the sought-after year in either summers or winters.
+	 * 
+	 * @param year 1900 - 2008
+	 * @return its index in either summers or winters. Simple -1 if bad year.
+	 */
+	public int indexOfYear(int year)
+	{
+		for(int i = 0; i < years.length; i++)
+		{
+			if(years[i] == year)
+				return i;
+		}
+		return -1;
+	}
+	
+	/**
+	 * Sets the scores[] array.
+	 * 
+	 * @param scores copy that
+	 */
+	public void setScores(float[] scores)
+	{
+		this.scores = scores;
 	}
 	
 	/**
@@ -49,82 +80,100 @@ public class Graphrame {
 		papa.noFill();
 		papa.strokeWeight(4f);
 		papa.strokeJoin(PConstants.MITER);
+		
 		papa.beginShape();
 		papa.vertex(x, y);
-		papa.vertex(x, y + height);
-		papa.vertex(x + width, y + height);
+		papa.vertex(x, y + h);
+		papa.vertex(x + w, y + h);
 		papa.endShape();
-	}
-	
-	public int indexOfYear(int season, int year)
-	{
-		int weather[] = season == 0 ? summers : winters;
-		for(int i = 0; i < weather.length; i++)
-		{
-			if(weather[i] == year)
-				return i;
-		}
-		return -1;
-	}
-	
-	/**
-	 * Draws and labels x-axis tick marks. Varies only based on summer/winter.
-	 * 
-	 * @param season 0 for summer and 1 for winter
-	 */
-	public float[] xTicks(int season)
-	{
-		int weather[] = season == 0 ? summers : winters;
-		float gap = width/weather.length;
-		float position = x;
-		
-		float ticks[] = new float[weather.length];
-		
-		for(int i = 0; i < weather.length; i++)
-		{
-			position += gap;
-			ticks[i] = position;
-			papa.line(position, y + height + 1, position, y + height + 8);
-			
-			papa.fill(0);
-			papa.textAlign(PConstants.CENTER);
-			papa.text(weather[i], position, y + height + 24);
-		}
-		return ticks;
-	}
-	
-	/**
-	 * Draws and labels y-axis tick marks. Varies based on range of scores[].
-	 * 
-	 * @param scale 0 if the scale is to start at 0, 1 if the scale is to start at a calculated lower bound.
-	 * @param marks the number of tick marks to draw.
-	 * @return the y-coordinates of each tick mark.
-	 */
-	public float[] yTicks(int scale, int marks)
-	{
-		float max = maxS = upperBound(max(scores));
-		float min = minS = scale == 0 ? 0 : lowerBound(min(scores));
 
-		float increment = (max - min)/(marks - 1);	
-		float gap = height/marks;
-		float position = y + height;
+		papa.textAlign(PConstants.CENTER);
+		papa.fill(0);
+		drawXTicks();
+		drawYTicks();
+	}
+	
+	/**
+	 * x tick drawer.
+	 */
+	private void drawXTicks()
+	{
+		for(int i = 0; i < xTicks.length; i++)
+		{
+			papa.line(xTicks[i], y + h + 1, xTicks[i], y + h + 8);
+			papa.text(years[i], xTicks[i], y + h + 24);
+		}
+	}
+	
+	/**
+	 * y tick drawer.
+	 */
+	private void drawYTicks()
+	{
+		for(int i = 0; i < yTicks.length; i++)
+		{
+			papa.line(x - 1, yTicks[i], x - 8, yTicks[i]);
+			papa.text((int)yLabels[i], x - 24, yTicks[i] + 4);
+		}
+	}
+	
+	/**
+	 * Sets a Dot object's x/y coordinate.
+	 * 
+	 * @param dot the dot
+	 */
+	public void plantDot(Dot dot)
+	{
+		dot.x = xTicks[indexOfYear(dot.medalist.year)];
+		dot.y = (y + h)	- (dot.medalist.score - lbound)/(ubound - lbound)*(y + h - yTicks[yTicks.length - 1]);
+	}
+	
+	/**
+	 * Tick marks for summer or winter years.
+	 * 
+	 * @param season 0 for summer and 1 for winter.
+	 */
+	public void setXTicks(int season)
+	{
+		years = season == 0 ? summers : winters;
 		
-		float ticks[] = new float[marks];
+		float gap = w/years.length,
+			  xPos = x;
 		
-		if(scale == 0)
-			min += increment;
+		xTicks = new float[years.length];
+		
+		for(int i = 0; i < years.length; i++)
+		{
+			xPos += gap;
+			xTicks[i] = xPos;
+		}
+	}
+	
+	/**
+	 * Specify 0 or 1 for "scaling mode" and the number of the tick marks you want.
+	 * 
+	 * @param scale 0 to begin at 0, 1 to begin at lower bound.
+	 * @param marks the number of tick marks you want.
+	 */
+	public void setYTicks(int scale, int marks)
+	{
+		yscale = scale;
+		
+		ubound = upperBound(max(scores));
+		lbound = scale == 0 ? 0 : lowerBound(min(scores));
+
+		float increment = (ubound - lbound)/(marks),
+			  gap = h/marks,
+			  yPos = y + h;
+		
+		yTicks  = new float[marks];
+		yLabels = new float[marks];
 		
 		for(int i = 0; i < marks; i++)
 		{
-			ticks[i] = position -= gap;
-			papa.line(x - 1, position, x - 8, position);
-			
-			papa.fill(0);
-			papa.textAlign(PConstants.RIGHT, PConstants.CENTER);
-			papa.text((int)min, x - 24, position);
-			min += increment;
+			yTicks[i]  = yPos -= gap;
+			yLabels[i] = lbound + increment*(i + 1);	// min += increment;
 		}
-		return ticks;
 	}
 	
 	/**
@@ -133,7 +182,7 @@ public class Graphrame {
 	 * @param min
 	 * @return
 	 */
-	public float lowerBound(float min)
+	private float lowerBound(float min)
 	{
 		int bound = (int)min;		
 		int magnitude = 0;
@@ -153,7 +202,7 @@ public class Graphrame {
 	 * @param max
 	 * @return
 	 */
-	public float upperBound(float max)
+	private float upperBound(float max)
 	{
 		int bound = (int)max;
 		int magnitude = 0;
@@ -173,7 +222,7 @@ public class Graphrame {
 	 * @param ation the float[] array
 	 * @return the smallest float in it
 	 */
-	public float min(float ation[])
+	private float min(float ation[])
 	{
 		float min = Float.MAX_VALUE;
 		
@@ -192,7 +241,7 @@ public class Graphrame {
 	 * @param ation the float[] array
 	 * @return the largest float in it
 	 */
-	public float max(float ation[])
+	private float max(float ation[])
 	{
 		float max = Float.MIN_VALUE;
 		
