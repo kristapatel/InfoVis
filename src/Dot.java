@@ -1,5 +1,4 @@
-import processing.core.PApplet;
-import processing.core.PConstants;
+import processing.core.*;
 
 /**
  * A simple data point. This will be drawn as a circle.
@@ -81,8 +80,8 @@ public class Dot {
 	/**
 	 * Highlighter.
 	 */
-	public void highlight()
+	public boolean highlight()
 	{
-		highlighted = ((PApplet.abs(x - papa.mouseX) <= radius) && (PApplet.abs(y - papa.mouseY) <= radius));
+		return highlighted = ((PApplet.abs(x - papa.mouseX) <= radius) && (PApplet.abs(y - papa.mouseY) <= radius));
 	}
 }

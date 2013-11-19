@@ -1,5 +1,6 @@
-import processing.core.PApplet;
-import processing.core.PConstants;
+import processing.core.*;
+
+import java.util.ArrayList;
 
 /**
  * To contain graph specifics.
@@ -15,9 +16,8 @@ public class Graphrame {
 							 1956, 1960, 1964, 1968, 1972, 1976, 1980, 
 							 1984, 1988, 1992, 1996, 2000, 2004, 2008 };	// ignore 1906
 	
-	static int[] winters = { 1924, 1928, 1932, 1936, 1940, 1944, 1948, 
-							 1952, 1956, 1960, 1964, 1968, 1972, 1976, 
-							 1980, 1984, 1988, 1992, 1994, 1998, 2002, 2006 };
+	static int[] winters = { 1924, 1928, 1932, 1936, 1940, 1944, 1948, 1952, 1956, 1960, 1964, 
+							 1968, 1972, 1976, 1980, 1984, 1988, 1992, 1994, 1998, 2002, 2006 };
 	
 	float x = 100, 
 		  y = 100, 
@@ -26,7 +26,8 @@ public class Graphrame {
 	
 	int[] years;	// set with xTicks
 	
-	int yscale;		// set with yTicks
+	int yscale,
+		ymarks = 10;		// set with yTicks
 	
 	float lbound, ubound;	// set with yTicks
 	float[] scores;
@@ -34,7 +35,9 @@ public class Graphrame {
 	float[] xTicks, yTicks;
 	float[] yLabels;		// set with yTicks
 	
+	ArrayList<Dot> aurum, argentum, aerea;
 	
+	Dot highlighted;
 
 	/**
 	 * Constructor.
@@ -72,60 +75,123 @@ public class Graphrame {
 		this.scores = scores;
 	}
 	
+	public void setGold(ArrayList<Dot> dotList)
+	{
+		aurum = dotList;
+		for(Dot dot : aurum)
+			plantDot(dot);
+	}
+	
+	public void setSilver(ArrayList<Dot> dotList)
+	{
+		argentum = dotList;
+		for(Dot dot : argentum)
+			plantDot(dot);
+	}
+	
+	public void setBronze(ArrayList<Dot> dotList)
+	{
+		aerea = dotList;
+		for(Dot dot : aerea)
+			plantDot(dot);
+	}
+	
+	public void highlight()
+	{
+		highlighted = null;
+		
+		for(Dot dot : aurum)
+			if(dot.highlight())
+			{
+				highlighted = dot;
+				break;
+			}
+		
+		if(highlighted == null)
+			for(Dot dot : argentum)
+				if(dot.highlight())
+				{
+					highlighted = dot;
+					break;
+				}
+		
+		if(highlighted == null)
+			for(Dot dot : aerea)
+				if(dot.highlight())
+				{
+					highlighted = dot;
+					break;
+				}
+	}
+	
 	/**
 	 * Drawer.
 	 */
 	public void draw()
 	{
+		drawAxes();
+		drawTicks();
+		drawConnektor();
+		drawDots();
+		
+		if(highlighted != null)
+			highlighted.draw();
+	}
+	
+	private void drawAxes()
+	{
 		papa.noFill();
 		papa.strokeWeight(4f);
 		papa.strokeJoin(PConstants.MITER);
-		
 		papa.beginShape();
 		papa.vertex(x, y);
 		papa.vertex(x, y + h);
 		papa.vertex(x + w, y + h);
 		papa.endShape();
+	}
 
+	private void drawTicks()
+	{
 		papa.textAlign(PConstants.CENTER);
 		papa.fill(0);
-		drawXTicks();
-		drawYTicks();
-	}
-	
-	/**
-	 * x tick drawer.
-	 */
-	private void drawXTicks()
-	{
+		
 		for(int i = 0; i < xTicks.length; i++)
 		{
 			papa.line(xTicks[i], y + h + 1, xTicks[i], y + h + 8);
 			papa.text(years[i], xTicks[i], y + h + 24);
 		}
-	}
-	
-	/**
-	 * y tick drawer.
-	 */
-	private void drawYTicks()
-	{
+		
 		for(int i = 0; i < yTicks.length; i++)
 		{
 			papa.line(x - 1, yTicks[i], x - 8, yTicks[i]);
 			papa.text((int)yLabels[i], x - 24, yTicks[i] + 4);
 		}
 	}
-	
-	/**
-	 * Sets a Dot object's x/y coordinate.
-	 * 
-	 * @param dot the dot
-	 */
-	public void plantDot(Dot dot)
+
+	private void drawConnektor()
 	{
-		dot.x = xTicks[indexOfYear(dot.medalist.year)];
-		dot.y = (y + h)	- (dot.medalist.score - lbound)/(ubound - lbound)*(y + h - yTicks[yTicks.length - 1]);
+		papa.noFill();
+		papa.strokeWeight(2f);
+		papa.strokeJoin(PConstants.ROUND);
+		
+		papa.beginShape();
+		for(Dot dot : aurum) papa.vertex(dot.x, dot.y);
+		papa.endShape();
+		
+		papa.beginShape();
+		for(Dot dot : argentum) papa.vertex(dot.x, dot.y);
+		papa.endShape();
+		
+		papa.beginShape();
+		for(Dot dot : aerea) papa.vertex(dot.x, dot.y);
+		papa.endShape();
+	}
+	
+	private void drawDots()
+	{
+		for(Dot dot : aurum) dot.draw();
+		for(Dot dot : argentum) dot.draw();
+		for(Dot dot : aerea) dot.draw();
 	}
 	
 	/**
@@ -133,7 +199,7 @@ public class Graphrame {
 	 * 
 	 * @param season 0 for summer and 1 for winter.
 	 */
-	public void setXTicks(int season)
+	public void plantXTicks(int season)
 	{
 		years = season == 0 ? summers : winters;
 		
@@ -153,27 +219,38 @@ public class Graphrame {
 	 * Specify 0 or 1 for "scaling mode" and the number of the tick marks you want.
 	 * 
 	 * @param scale 0 to begin at 0, 1 to begin at lower bound.
-	 * @param marks the number of tick marks you want.
+	 * @param ymarks the number of tick marks you want.
 	 */
-	public void setYTicks(int scale, int marks)
+	public void plantYTicks(int scale)
 	{
 		yscale = scale;
 		
 		ubound = upperBound(max(scores));
-		lbound = scale == 0 ? 0 : lowerBound(min(scores));
+		lbound = (scale == 0) ? 0 : lowerBound(min(scores));
 
-		float increment = (ubound - lbound)/(marks),
-			  gap = h/marks,
+		float increment = (ubound - lbound)/(ymarks),
+			  gap = h/ymarks,
 			  yPos = y + h;
 		
-		yTicks  = new float[marks];
-		yLabels = new float[marks];
+		yTicks  = new float[ymarks];
+		yLabels = new float[ymarks];
 		
-		for(int i = 0; i < marks; i++)
+		for(int i = 0; i < ymarks; i++)
 		{
 			yTicks[i]  = yPos -= gap;
 			yLabels[i] = lbound + increment*(i + 1);	// min += increment;
 		}
+	}
+	
+	/**
+	 * Sets a Dot object's x/y coordinate.
+	 * 
+	 * @param dot the dot
+	 */
+	public void plantDot(Dot dot)
+	{
+		dot.x = xTicks[indexOfYear(dot.medalist.year)];
+		dot.y = (y + h)	- (dot.medalist.score - lbound)/(ubound - lbound)*(y + h - yTicks[yTicks.length - 1]);
 	}
 	
 	/**

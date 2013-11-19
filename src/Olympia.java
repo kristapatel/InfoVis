@@ -39,50 +39,16 @@ public class Olympia extends PApplet {
 	
 	public void draw()
 	{
-		background(255);	// refresh only on mouseMoved()
-		
+		background(255);
 		grapheme.draw();
-		drawDots(goldDots);
-		drawDots(silverDots);
-		drawDots(bronzeDots);
 	}
 	
-	public void mouseMoved()
+	public void mouseMoved()	// highlighting needs work
 	{
-		highlightDots(goldDots);
-		highlightDots(silverDots);
-		highlightDots(bronzeDots);
-	}
-	
-	public void drawDots(ArrayList<Dot> dotList)
-	{
-		connektor(dotList);
-		for(Dot dot : dotList)
-			dot.draw();
-	}
-	
-	public void highlightDots(ArrayList<Dot> dotList)
-	{
-		for(Dot dot : dotList)
-			dot.highlight();
-	}
-	
-	/**
-	 * This is to draw the connecting lines.
-	 * 
-	 * @param dotList
-	 */
-	public void connektor(ArrayList<Dot> dotList)
-	{
-		noFill();
-		strokeWeight(2f);
-		strokeJoin(PConstants.ROUND);
-		
-		beginShape();
-		for(Dot dot : dotList) {
-			vertex(dot.x, dot.y);
-		}
-		endShape();
+		// for(Dot dot : goldDots)   dot.highlight();
+		// for(Dot dot : silverDots) dot.highlight();
+		// for(Dot dot : bronzeDots) dot.highlight();
+		grapheme.highlight();
 	}
 	
 	public void loadSet(String filename)
@@ -90,21 +56,21 @@ public class Olympia extends PApplet {
 		String[] things = loadStrings(filename);
 		float[] scores = new float[things.length];
 		
-		int i = 0;
-		for(String thing : things)
+		for(int i = 0; i < things.length; i++)
 		{
-			String[] sub = thing.split(",");
-			scores[i++] = Float.parseFloat(sub[5]);
-			addDot(sub);
+			String[] sub = things[i].split(",");
+			scores[i] = Float.parseFloat(sub[5]);
+			parseDot(sub);
 		}
 		
 		grapheme.setScores(scores);
-		grapheme.setXTicks(summer);
-		grapheme.setYTicks(yscale, 10);
 		
-		plantDots(goldDots);
-		plantDots(silverDots);
-		plantDots(bronzeDots);
+		grapheme.plantXTicks(summer);
+		grapheme.plantYTicks(yscale);
+		
+		grapheme.setGold(goldDots);
+		grapheme.setSilver(silverDots);
+		grapheme.setBronze(bronzeDots);
 	}
 	
 	/**
@@ -112,7 +78,7 @@ public class Olympia extends PApplet {
 	 * 
 	 * @param sub
 	 */
-	public void addDot(String[] sub)
+	public void parseDot(String[] sub)
 	{
 		float score = Float.parseFloat(sub[5]);
 		if(score <= 0) return;
@@ -151,15 +117,5 @@ public class Olympia extends PApplet {
 			}
 		}
 		dotList.add(new Dot(this, grapheme, 0, 0, medalist));
-	}
-	
-	/**
-	 * This is to set the x/y-coordinates of each Dot.
-	 * @param dotList
-	 */
-	public void plantDots(ArrayList<Dot> dotList)
-	{
-		for(Dot dot : dotList)
-			grapheme.plantDot(dot);
 	}
 }
