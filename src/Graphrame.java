@@ -132,6 +132,7 @@ public class Graphrame {
 		drawAxes();
 		drawTicks();
 		drawConnektor();
+		drawMenu();
 		drawDots();
 		
 		if(highlighted != null)
@@ -150,6 +151,16 @@ public class Graphrame {
 		papa.endShape();
 	}
 
+	private void drawMenu()
+	{
+		papa.fill(0xFFFFD700);
+		papa.rect(1150, 200, 20, 20); //Gold
+		papa.fill(0xFFC0C0C0);
+		papa.rect(1150, 235, 20, 20); //Silver
+		papa.fill(0xFFDA8A67);
+		papa.rect(1150, 270, 20, 20); //Bronze
+	}
+	
 	private void drawTicks()
 	{
 		papa.textAlign(PConstants.CENTER);
@@ -189,6 +200,7 @@ public class Graphrame {
 	
 	private void drawDots()
 	{
+		//check menu for mouseOnClicks here
 		for(Dot dot : aurum) dot.draw();
 		for(Dot dot : argentum) dot.draw();
 		for(Dot dot : aerea) dot.draw();
