@@ -1,4 +1,5 @@
 import processing.core.*;
+import java.util.ArrayList;
 
 /**
  * A simple data point. This will be drawn as a circle.
@@ -7,18 +8,23 @@ import processing.core.*;
  */
 public class Dot {
 
+	static int colors[] = { 0xFFFFD700, 0xFFC0C0C0, 0xFFDA8A67 };
+	static float radius   = 6,
+				 diameter = radius*2;
+	
 	PApplet papa;	// reference to Olympia to allow use of Processing library
 	
-	Graphrame grapheme;
-	
-	static int colors[] = { 0xFFFFD700, 0xFFC0C0C0, 0xFFDA8A67 };
-	static float radius   = 8,
-				 diameter = 16;
+	float x, y;
 	
 	boolean highlighted = false;
 	
-	float x, y;
-	Medalist medalist;
+	int year;
+	ArrayList<String> athlete;
+	int medal;
+	ArrayList<String> country;
+	float score;
+	
+	// ArrayList<Dot> links = new ArrayList<Dot>();
 	
 	/**
 	 * Constructor.
@@ -28,13 +34,24 @@ public class Dot {
 	 * @param y y-coordinate
 	 * @param medalist the lucky winner
 	 */
-	public Dot(PApplet papa, Graphrame grapheme, float x, float y, Medalist medalist)
+	public Dot(PApplet papa, float x, float y)
 	{
 		this.papa = papa;
-		this.grapheme = grapheme;
 		this.x = x;
 		this.y = y;
-		this.medalist = medalist;
+		this.athlete = new ArrayList<String>();
+		this.country = new ArrayList<String>();
+	}
+	
+	public Dot setAthlete(int year, String athlete, int medal, String country, float score)
+	{
+		this.year = year;
+		this.athlete.add(athlete);
+		this.medal = medal;
+		this.country.add(country);
+		this.score = score;
+		
+		return this;
 	}
 	
 	/**
@@ -45,8 +62,8 @@ public class Dot {
 	 */
 	public void addAthlete(String athlete, String country)
 	{
-		this.medalist.athlete += "/" + athlete;
-		this.medalist.country += "/" + country;
+		this.athlete.add(athlete);
+		this.country.add(country);
 	}
 	
 	/**
@@ -54,34 +71,31 @@ public class Dot {
 	 */
 	public void draw()
 	{
-		int color = colors[medalist.medal.ordinal()];
 		papa.strokeWeight(1f);
-		
-		if(highlighted)
-		{	
-			papa.line(x, y, grapheme.x, y);
-			papa.line(x, y, x, grapheme.y + grapheme.h);
-			
-			papa.line(x, y, x + 36, y - 36);
-			papa.fill(color);
-			papa.rect(x + 36, y - 76, papa.textWidth(medalist.athlete) + 4, 40, 4);	// height 40
-			
-			papa.fill(0);
-			papa.textAlign(PConstants.LEFT);
-			papa.text(medalist.athlete, x + 36 + 2, y - 76 + 12);
-			papa.text(medalist.country, x + 36 + 2, y - 76 + 24);
-			papa.text(medalist.score  , x + 36 - 1, y - 76 + 36);
-		}
-		
-		papa.fill(color);
+		papa.fill(colors[medal]);
 		papa.ellipse(x, y, diameter, diameter);
 	}
 	
 	/**
 	 * Highlighter.
 	 */
-	public boolean highlight()
+	public boolean moused()
 	{
-		return highlighted = ((PApplet.abs(x - papa.mouseX) <= radius) && (PApplet.abs(y - papa.mouseY) <= radius));
+		return highlighted = (PApplet.abs(x - papa.mouseX) <= radius) && (PApplet.abs(y - papa.mouseY) <= radius);
+	}
+	
+	public void highlight()
+	{
+		highlighted = !highlighted;
+	}
+	
+	public void link(Dot dot)
+	{
+		
+	}
+	
+	public String toString()
+	{
+		return year + ", " + athlete.get(0) + ", " + medal + ", " + country.get(0) + ", " + score;
 	}
 }

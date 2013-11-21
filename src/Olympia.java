@@ -1,5 +1,4 @@
 import processing.core.*;
-
 import java.util.ArrayList;
 
 /**
@@ -11,16 +10,11 @@ public class Olympia extends PApplet {
 
 	private static final long serialVersionUID = 1L;
 	
-	final int summer = 0, 
-			  winter = 1;
-	
-	int yscale = 0;
-	
-	ArrayList<Dot> goldDots   = new ArrayList<Dot>();
-	ArrayList<Dot> silverDots = new ArrayList<Dot>();
-	ArrayList<Dot> bronzeDots = new ArrayList<Dot>();
-	
+	int summer = 0, 
+	    winter = 1;
+	int yscale = 1;
 	Graphrame grapheme;
+	ArrayList<Dot> allDots;	
 	
 	public static void main(String[] args)
 	{
@@ -30,52 +24,34 @@ public class Olympia extends PApplet {
 	public void setup()
 	{
 		size(1280, 800);
-		background(255);
+		frameRate(8);
 		textSize(11);
 		
-		grapheme = new Graphrame(this);
-		loadSet("Book1.csv");
+		loadSet("tf_discus_men.csv");
 	}
 	
 	public void draw()
 	{
+		
+	}
+	
+	public void mouseMoved()
+	{
 		background(255);
 		grapheme.draw();
-	}
-	
-	public void mouseMoved()	// highlighting needs work
-	{
-		// for(Dot dot : goldDots)   dot.highlight();
-		// for(Dot dot : silverDots) dot.highlight();
-		// for(Dot dot : bronzeDots) dot.highlight();
 		grapheme.highlight();
-	}
-	
-	public void mouseReleased(){
-		grapheme.checkMenu();
-		
 	}
 	
 	public void loadSet(String filename)
 	{
-		String[] things = loadStrings(filename);
-		float[] scores = new float[things.length];
+		grapheme = new Graphrame(this);
+		allDots = new ArrayList<Dot>();
 		
-		for(int i = 0; i < things.length; i++)
-		{
-			String[] sub = things[i].split(",");
-			scores[i] = Float.parseFloat(sub[5]);
-			parseDot(sub);
-		}
+		for(String sub : loadStrings(filename))
+			parser(sub.split(","));
 		
-		grapheme.setScores(scores);
-		
-		grapheme.plantXTicks(summer);
-		grapheme.plantYTicks(yscale);
-		
-		grapheme.setGold(goldDots);
-		grapheme.setSilver(silverDots);
-		grapheme.setBronze(bronzeDots);
+		grapheme.handOver(allDots);
+		grapheme.initialize(summer, yscale);
 	}
 	
 	/**
@@ -83,44 +59,34 @@ public class Olympia extends PApplet {
 	 * 
 	 * @param sub
 	 */
-	public void parseDot(String[] sub)
+	public void parser(String[] sub)
 	{
-		float score = Float.parseFloat(sub[5]);
-		if(score <= 0) return;
-		
 		int year = Integer.parseInt(sub[0]);
 		String athlete = sub[2];
+		String metal = sub[3];
 		String country = sub[4];
-		Medalist medalist;
+		float score = Float.parseFloat(sub[5]);
+	
+		if(score == 0)
+			return;
 		
-		int index;
-		ArrayList<Dot> dotList;
+		int medal;		
+		if(metal.equals("GOLD")) {
+			medal = 0;
+		}
+		else if(metal.equals("SILVER")) {
+			medal = 1;
+		}
+		else {
+			medal = 2;
+		}
 		
-		if(sub[3].equals("GOLD"))
-		{
-			index = 0;
-			dotList = goldDots;
-		}
-		else if(sub[3].equals("SILVER"))
-		{
-			index = 1;
-			dotList = silverDots;
-		}
-		else
-		{
-			index = 2;
-			dotList = bronzeDots;
-		}
-		medalist = new Medalist(year, score, athlete, country, Medalist.Medal.values()[index]);
-		
-		for(Dot d : dotList)
-		{
-			if(d.medalist.year == medalist.year && d.medalist.medal == medalist.medal)
-			{
-				d.addAthlete(medalist.athlete, medalist.country);
+		for(Dot d : allDots) {
+			if(d.year == year && d.medal == medal) {
+				d.addAthlete(athlete, country);
 				return;
 			}
 		}
-		dotList.add(new Dot(this, grapheme, 0, 0, medalist));
+		allDots.add(new Dot(this, 0, 0).setAthlete(year, athlete, medal, country, score));
 	}
 }

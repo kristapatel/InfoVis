@@ -1,5 +1,4 @@
 import processing.core.*;
-
 import java.util.ArrayList;
 
 /**
@@ -35,13 +34,10 @@ public class Graphrame {
 	float[] xTicks, yTicks;
 	float[] yLabels;		// set with yTicks
 	
-	ArrayList<Dot> aurum, argentum, aerea;
+	Dot[] metalli;
+	int[] gindex, sindex, bindex;	// double array
 	
-	Dot highlighted;
-	
-	boolean drawGold = true;
-	boolean drawSilver = true;
-	boolean drawBronze = true;
+	Dot highlighted = null;
 
 	/**
 	 * Constructor.
@@ -52,80 +48,58 @@ public class Graphrame {
 	{
 		this.papa = papa;
 	}
-
-	/**
-	 * Crudely returns index of the sought-after year in either summers or winters.
-	 * 
-	 * @param year 1900 - 2008
-	 * @return its index in either summers or winters. Simple -1 if bad year.
-	 */
-	public int indexOfYear(int year)
+	
+	public void handOver(ArrayList<Dot> dots)
 	{
-		for(int i = 0; i < years.length; i++)
+		metalli = dots.toArray(new Dot[dots.size()]);
+		
+		int gi = 0, si = 0, bi = 0, fi = 0;
+		int size = metalli.length;
+		
+		gindex = new int[size/3];
+		sindex = new int[size/3];
+		bindex = new int[size/3];
+		
+		scores = new float[size];
+		
+		for(int i = 0; i < size; i++)
 		{
-			if(years[i] == year)
-				return i;
+			scores[fi++] = metalli[i].score;
+			int m = metalli[i].medal;
+			
+			if(m == 0)
+				gindex[gi++] = i;
+			else if (m == 1)
+				sindex[si++] = i;
+			else
+				bindex[bi++] = i;
 		}
-		return -1;
 	}
 	
-	/**
-	 * Sets the scores[] array.
-	 * 
-	 * @param scores copy that
-	 */
-	public void setScores(float[] scores)
+	public void initialize(int season, int yscale)
 	{
-		this.scores = scores;
-	}
-	
-	public void setGold(ArrayList<Dot> dotList)
-	{
-		aurum = dotList;
-		for(Dot dot : aurum)
-			plantDot(dot);
-	}
-	
-	public void setSilver(ArrayList<Dot> dotList)
-	{
-		argentum = dotList;
-		for(Dot dot : argentum)
-			plantDot(dot);
-	}
-	
-	public void setBronze(ArrayList<Dot> dotList)
-	{
-		aerea = dotList;
-		for(Dot dot : aerea)
+		plantXTicks(season);
+		plantYTicks(yscale);
+		for(Dot dot : metalli)
 			plantDot(dot);
 	}
 	
 	public void highlight()
 	{
-		highlighted = null;
-		
-		for(Dot dot : aurum)
-			if(dot.highlight())
-			{
-				highlighted = dot;
-				break;
+		if(highlighted != null)
+		{
+			if(!highlighted.moused())
+				highlighted = null;
+		}
+		else
+		{
+			for(Dot dot : metalli) {
+				if(dot.moused()) {
+					highlighted = dot;
+					break;
+				}
 			}
-		
-		if(highlighted == null)
-			for(Dot dot : argentum)
-				if(dot.highlight())
-				{
-					highlighted = dot;
-					break;
-				}
-		
-		if(highlighted == null)
-			for(Dot dot : aerea)
-				if(dot.highlight())
-				{
-					highlighted = dot;
-					break;
-				}
+		}
 	}
 	
 	/**
@@ -135,12 +109,10 @@ public class Graphrame {
 	{
 		drawAxes();
 		drawTicks();
-		drawConnektor();
-		drawMenu();
+		drawConnektors();
 		drawDots();
 		
-		if(highlighted != null)
-			highlighted.draw();
+		if(highlighted != null) drawHighlighted();
 	}
 	
 	private void drawAxes()
@@ -173,86 +145,50 @@ public class Graphrame {
 		}
 	}
 
-	private void drawConnektor()
+	private void drawConnektors()	// select ability
 	{
 		papa.noFill();
 		papa.strokeWeight(2f);
 		papa.strokeJoin(PConstants.ROUND);
 		
-		if (drawGold){
-			papa.beginShape();
-			for(Dot dot : aurum) papa.vertex(dot.x, dot.y);
-			papa.endShape();
-		}
-		if (drawSilver){
-			papa.beginShape();
-			for(Dot dot : argentum) papa.vertex(dot.x, dot.y);
-			papa.endShape();
-		}
-		if (drawBronze){
-			papa.beginShape();
-			for(Dot dot : aerea) papa.vertex(dot.x, dot.y);
-			papa.endShape();
-		}
-	}
-	
-	private void drawMenu()
-	{
-		//gold
-		if (drawGold){
-			papa.fill(0xFFFFD700);
-		}
-		else{
-			papa.fill(0xFFFFFF);
-		}
-		papa.rect(1150, 200, 20, 20);
+		papa.beginShape();
+		for(int i : gindex)
+			papa.vertex(metalli[i].x, metalli[i].y);
+		papa.endShape();
 		
-		//silver
-		if (drawSilver){
-			papa.fill(0xFFC0C0C0);
-		}
-		else{
-			papa.fill(0xFFFFFF);
-		}
-		papa.rect(1150, 235, 20, 20);
+		papa.beginShape();
+		for(int i : sindex)
+			papa.vertex(metalli[i].x, metalli[i].y);
+		papa.endShape();
 		
-		//bronze
-		if (drawBronze){
-			papa.fill(0xFFDA8A67);
-		}
-		else{
-			papa.fill(0xFFFFFF);
-		}
-		papa.rect(1150, 270, 20, 20);
+		papa.beginShape();
+		for(int i : bindex)
+			papa.vertex(metalli[i].x, metalli[i].y);
+		papa.endShape();
 	}
 	
-	
-	public void checkMenu(){
-
-		if (PApplet.abs(papa.mouseX - 1150) <= 20 && PApplet.abs(papa.mouseY - 200) <= 20){
-			drawGold = !drawGold;	
-		}
-		else if (PApplet.abs(papa.mouseX - 1150) <= 20 && PApplet.abs(papa.mouseY - 235) <= 20){
-			drawSilver = !drawSilver;	
-		}
-		else if (PApplet.abs(papa.mouseX - 1150) <= 20 && PApplet.abs(papa.mouseY - 270) <= 20){
-			drawBronze = !drawBronze;	
-		}
-
-	}
-	
-	private void drawDots()
+	private void drawDots()	// select ability
 	{
-		//check menu for mouseOnClicks here
-		if (drawGold){
-			for(Dot dot : aurum) dot.draw();
-		}
-		if (drawSilver){
-			for(Dot dot : argentum) dot.draw();
-		}
-		if (drawBronze){
-			for(Dot dot : aerea) dot.draw();
-		}
+		for(int i = metalli.length - 1; i >=0; i--)
+			metalli[i].draw();
+	}
+	
+	private void drawHighlighted()
+	{
+		papa.line(highlighted.x, highlighted.y, x, highlighted.y);
+		papa.line(highlighted.x, highlighted.y, highlighted.x, y + h);
+		
+		papa.line(highlighted.x, highlighted.y, highlighted.x + 36, highlighted.y - 36);
+		papa.fill(Dot.colors[highlighted.medal]);
+		papa.rect(highlighted.x + 36, highlighted.y - 76, papa.textWidth(highlighted.athlete.get(0)) + 4, 40, 4);	// height 40
+		
+		papa.fill(0);
+		papa.textAlign(PConstants.LEFT);
+		papa.text(highlighted.athlete.get(0), highlighted.x + 36 + 2, highlighted.y - 76 + 12);
+		papa.text(highlighted.country.get(0), highlighted.x + 36 + 2, highlighted.y - 76 + 24);
+		papa.text(highlighted.score  , highlighted.x + 36 - 1, highlighted.y - 76 + 36);
+		
+		highlighted.draw();
 	}
 	
 	/**
@@ -260,7 +196,7 @@ public class Graphrame {
 	 * 
 	 * @param season 0 for summer and 1 for winter.
 	 */
-	public void plantXTicks(int season)
+	private void plantXTicks(int season)
 	{
 		years = season == 0 ? summers : winters;
 		
@@ -282,7 +218,7 @@ public class Graphrame {
 	 * @param scale 0 to begin at 0, 1 to begin at lower bound.
 	 * @param ymarks the number of tick marks you want.
 	 */
-	public void plantYTicks(int scale)
+	private void plantYTicks(int scale)
 	{
 		yscale = scale;
 		
@@ -308,10 +244,25 @@ public class Graphrame {
 	 * 
 	 * @param dot the dot
 	 */
-	public void plantDot(Dot dot)
+	private void plantDot(Dot dot)
 	{
-		dot.x = xTicks[indexOfYear(dot.medalist.year)];
-		dot.y = (y + h)	- (dot.medalist.score - lbound)/(ubound - lbound)*(y + h - yTicks[yTicks.length - 1]);
+		dot.x = xTicks[indexOfYear(dot.year)];
+		dot.y = (y + h)	- (dot.score - lbound)/(ubound - lbound)*(y + h - yTicks[yTicks.length - 1]);
+	}
+
+	/**
+	 * Crudely returns index of the sought-after year in either summers or winters.
+	 * 
+	 * @param year 1900 - 2008
+	 * @return its index in either summers or winters. Simple -1 if bad year.
+	 */
+	private int indexOfYear(int year)
+	{
+		for(int i = 0; i < years.length; i++) {
+			if(years[i] == year)
+				return i;
+		}
+		return -1;
 	}
 	
 	/**
