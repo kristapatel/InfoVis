@@ -51,6 +51,11 @@ public class Olympia extends PApplet {
 		grapheme.highlight();
 	}
 	
+	public void mouseReleased(){
+		grapheme.checkMenu();
+		
+	}
+	
 	public void loadSet(String filename)
 	{
 		String[] things = loadStrings(filename);

@@ -38,6 +38,10 @@ public class Graphrame {
 	ArrayList<Dot> aurum, argentum, aerea;
 	
 	Dot highlighted;
+	
+	boolean drawGold = true;
+	boolean drawSilver = true;
+	boolean drawBronze = true;
 
 	/**
 	 * Constructor.
@@ -151,16 +155,6 @@ public class Graphrame {
 		papa.endShape();
 	}
 
-	private void drawMenu()
-	{
-		papa.fill(0xFFFFD700);
-		papa.rect(1150, 200, 20, 20); //Gold
-		papa.fill(0xFFC0C0C0);
-		papa.rect(1150, 235, 20, 20); //Silver
-		papa.fill(0xFFDA8A67);
-		papa.rect(1150, 270, 20, 20); //Bronze
-	}
-	
 	private void drawTicks()
 	{
 		papa.textAlign(PConstants.CENTER);
@@ -185,25 +179,80 @@ public class Graphrame {
 		papa.strokeWeight(2f);
 		papa.strokeJoin(PConstants.ROUND);
 		
-		papa.beginShape();
-		for(Dot dot : aurum) papa.vertex(dot.x, dot.y);
-		papa.endShape();
+		if (drawGold){
+			papa.beginShape();
+			for(Dot dot : aurum) papa.vertex(dot.x, dot.y);
+			papa.endShape();
+		}
+		if (drawSilver){
+			papa.beginShape();
+			for(Dot dot : argentum) papa.vertex(dot.x, dot.y);
+			papa.endShape();
+		}
+		if (drawBronze){
+			papa.beginShape();
+			for(Dot dot : aerea) papa.vertex(dot.x, dot.y);
+			papa.endShape();
+		}
+	}
+	
+	private void drawMenu()
+	{
+		//gold
+		if (drawGold){
+			papa.fill(0xFFFFD700);
+		}
+		else{
+			papa.fill(0xFFFFFF);
+		}
+		papa.rect(1150, 200, 20, 20);
 		
-		papa.beginShape();
-		for(Dot dot : argentum) papa.vertex(dot.x, dot.y);
-		papa.endShape();
+		//silver
+		if (drawSilver){
+			papa.fill(0xFFC0C0C0);
+		}
+		else{
+			papa.fill(0xFFFFFF);
+		}
+		papa.rect(1150, 235, 20, 20);
 		
-		papa.beginShape();
-		for(Dot dot : aerea) papa.vertex(dot.x, dot.y);
-		papa.endShape();
+		//bronze
+		if (drawBronze){
+			papa.fill(0xFFDA8A67);
+		}
+		else{
+			papa.fill(0xFFFFFF);
+		}
+		papa.rect(1150, 270, 20, 20);
+	}
+	
+	
+	public void checkMenu(){
+
+		if (PApplet.abs(papa.mouseX - 1150) <= 20 && PApplet.abs(papa.mouseY - 200) <= 20){
+			drawGold = !drawGold;	
+		}
+		else if (PApplet.abs(papa.mouseX - 1150) <= 20 && PApplet.abs(papa.mouseY - 235) <= 20){
+			drawSilver = !drawSilver;	
+		}
+		else if (PApplet.abs(papa.mouseX - 1150) <= 20 && PApplet.abs(papa.mouseY - 270) <= 20){
+			drawBronze = !drawBronze;	
+		}
+
 	}
 	
 	private void drawDots()
 	{
 		//check menu for mouseOnClicks here
-		for(Dot dot : aurum) dot.draw();
-		for(Dot dot : argentum) dot.draw();
-		for(Dot dot : aerea) dot.draw();
+		if (drawGold){
+			for(Dot dot : aurum) dot.draw();
+		}
+		if (drawSilver){
+			for(Dot dot : argentum) dot.draw();
+		}
+		if (drawBronze){
+			for(Dot dot : aerea) dot.draw();
+		}
 	}
 	
 	/**
