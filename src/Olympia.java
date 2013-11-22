@@ -32,6 +32,8 @@ public class Olympia extends PApplet {
 	
 	public void draw()
 	{
+		background(255);
+		grapheme.draw();
 		
 	}
 	
@@ -40,6 +42,10 @@ public class Olympia extends PApplet {
 		background(255);
 		grapheme.draw();
 		grapheme.highlight();
+	}
+	
+	public void mouseReleased(){
+		grapheme.checkMenu();
 	}
 	
 	public void loadSet(String filename)

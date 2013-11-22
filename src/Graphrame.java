@@ -38,6 +38,9 @@ public class Graphrame {
 	int[] gindex, sindex, bindex;	// double array
 	
 	Dot highlighted = null;
+	boolean drawGold = true;
+	boolean drawSilver = true;
+	boolean drawBronze = true;
 
 	/**
 	 * Constructor.
@@ -95,8 +98,18 @@ public class Graphrame {
 		{
 			for(Dot dot : metalli) {
 				if(dot.moused()) {
-					highlighted = dot;
-					break;
+					if (dot.medal == 0 && drawGold){
+						highlighted = dot;
+						break;
+					}
+					if (dot.medal == 1 && drawSilver){
+						highlighted = dot;
+						break;
+					}
+					if (dot.medal == 2 && drawBronze){
+						highlighted = dot;
+						break;
+					}
 				}
 			}
 		}
@@ -107,6 +120,7 @@ public class Graphrame {
 	 */
 	public void draw()
 	{
+		drawMenu();
 		drawAxes();
 		drawTicks();
 		drawConnektors();
@@ -114,6 +128,33 @@ public class Graphrame {
 		
 		if(highlighted != null) drawHighlighted();
 	}
+	
+	private void drawMenu(){
+		if (drawGold){
+			papa.fill(0xFFFFD700);
+		}
+		else{
+			papa.fill(0xFFFFFFF);
+		}
+		papa.rect(1150, 200, 20, 20);
+		
+		if (drawSilver){
+			papa.fill(0xFFC0C0C0);
+		}
+		else{
+			papa.fill(0xFFFFFF);
+		}
+		papa.rect(1150, 235, 20, 20);
+		
+		if (drawBronze){
+			papa.fill(0xFFDA8A67);
+		}
+		else{
+			papa.fill(0xFFFFFF);
+		}
+		papa.rect(1150, 270, 20, 20);
+	}
+	
 	
 	private void drawAxes()
 	{
@@ -151,26 +192,50 @@ public class Graphrame {
 		papa.strokeWeight(2f);
 		papa.strokeJoin(PConstants.ROUND);
 		
-		papa.beginShape();
-		for(int i : gindex)
-			papa.vertex(metalli[i].x, metalli[i].y);
-		papa.endShape();
+		if (drawGold){
+			papa.beginShape();
+			for(int i : gindex)
+				papa.vertex(metalli[i].x, metalli[i].y);
+			papa.endShape();
+		}
 		
-		papa.beginShape();
-		for(int i : sindex)
-			papa.vertex(metalli[i].x, metalli[i].y);
-		papa.endShape();
+		if (drawSilver){
+			papa.beginShape();
+			for(int i : sindex)
+				papa.vertex(metalli[i].x, metalli[i].y);
+			papa.endShape();
+		}
 		
-		papa.beginShape();
-		for(int i : bindex)
-			papa.vertex(metalli[i].x, metalli[i].y);
-		papa.endShape();
+		if (drawBronze){
+			papa.beginShape();
+			for(int i : bindex)
+				papa.vertex(metalli[i].x, metalli[i].y);
+			papa.endShape();
+		}
 	}
 	
 	private void drawDots()	// select ability
 	{
-		for(int i = metalli.length - 1; i >=0; i--)
-			metalli[i].draw();
+		if (drawGold){
+			papa.beginShape();
+			for (int i : gindex){
+				metalli[i].draw();
+			}
+		}
+		
+		if (drawSilver){
+			papa.beginShape();
+			for (int i : sindex){
+				metalli[i].draw();
+			}
+		}
+		
+		if (drawBronze){
+			papa.beginShape();
+			for (int i : bindex){
+				metalli[i].draw();
+			}
+		}
 	}
 	
 	private void drawHighlighted()
@@ -341,5 +406,17 @@ public class Graphrame {
 		}
 		
 		return max;
+	}
+	
+	public void checkMenu(){
+		if (PApplet.abs(papa.mouseX - 1150) <= 20 && PApplet.abs(papa.mouseY - 200) <= 20){
+			drawGold = !drawGold;
+		}
+		else if (PApplet.abs(papa.mouseX - 1150) <= 20 && PApplet.abs(papa.mouseY - 235) <= 20){
+			drawSilver = !drawSilver;
+		}
+		else if (PApplet.abs(papa.mouseX - 1150) <= 20 && PApplet.abs(papa.mouseY - 270) <= 20){
+			drawBronze = !drawBronze;
+		}
 	}
 }
