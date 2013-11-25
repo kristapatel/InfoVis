@@ -21,7 +21,7 @@ public class Olympia extends PApplet {
 	
 	public static void main(String[] args)
 	{
-		PApplet.main(new String[] { "Olympia" });
+		PApplet.main(new String[] { "--present", "Olympia" });
 	}
 
 	public void setup()

@@ -94,6 +94,21 @@ public class Dot {
 		
 	}
 	
+	public ArrayList<Dot> matchAthlete(Dot[] dots, int[] indices, ArrayList<Dot> matches)
+	{
+		for (String ath : athlete){
+			for (int i = indices[0]; i < indices.length; i++){
+				for (String ath2: dots[indices[i]].athlete){
+					if (ath.equals(ath2)){
+						System.out.println("YES");
+						matches.add(dots[indices[i]]);
+					}
+				}
+			}
+		}
+		return matches;
+	}
+	
 	public String toString()
 	{
 		return year + ", " + athlete.get(0) + ", " + medal + ", " + country.get(0) + ", " + score;

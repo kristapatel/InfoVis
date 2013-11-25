@@ -38,7 +38,8 @@ public class Graphrame {
 	Dot[] metalli;
 	int[] gindex, sindex, bindex;	// double array
 	
-	Dot highlighted = null;
+	ArrayList<Dot> highlightedDots = new ArrayList<Dot>();
+
 	boolean drawGold = true;
 	boolean drawSilver = true;
 	boolean drawBronze = true;
@@ -90,28 +91,68 @@ public class Graphrame {
 	
 	public void highlight()
 	{
-		if(highlighted != null)
+		if(highlightedDots.size() != 0)
 		{
-			if(!highlighted.moused())
-				highlighted = null;
+			boolean anyHighlighted = false;
+			//if none of the dots are moused over, highlight nothing
+			for (Dot highlightDot : highlightedDots){
+				if (highlightDot.moused()){
+					anyHighlighted = true;
+					break;
+				}
+			}
+			if (!anyHighlighted){
+				highlightedDots.clear();
+			}
+			//for (int i = highlightedDots.size() - 1; i >= 0; i--){
+			//	if (!highlightedDots.get(i).moused()){
+			//		highlightedDots.remove(i);
+			//	}
+			//}
 		}
 		else
 		{
+			ArrayList<Dot> athleteMatches = new ArrayList<Dot>();
 			for(Dot dot : metalli) {
 				if(dot.moused()) {
 					if (dot.medal == 0 && drawGold){
-						highlighted = dot;
+						highlightedDots.add(dot);
+						//returns an array of  dots that matches the athlete 
+						athleteMatches = dot.matchAthlete(metalli, gindex, athleteMatches);
+						if (drawSilver){
+							athleteMatches = dot.matchAthlete(metalli, sindex, athleteMatches);
+						}
+						if (drawBronze){
+							athleteMatches = dot.matchAthlete(metalli, bindex, athleteMatches);
+						}
 						break;
 					}
 					if (dot.medal == 1 && drawSilver){
-						highlighted = dot;
+						highlightedDots.add(dot);
+						athleteMatches = dot.matchAthlete(metalli, sindex, athleteMatches);
+						if (drawGold){
+							athleteMatches = dot.matchAthlete(metalli, gindex, athleteMatches);
+						}
+						if (drawBronze){
+							athleteMatches = dot.matchAthlete(metalli, bindex, athleteMatches);
+						}
 						break;
 					}
 					if (dot.medal == 2 && drawBronze){
-						highlighted = dot;
+						highlightedDots.add(dot);
+						athleteMatches = dot.matchAthlete(metalli, bindex, athleteMatches);
+						if (drawGold){
+							athleteMatches = dot.matchAthlete(metalli, gindex, athleteMatches);
+						}
+						if (drawSilver){
+							athleteMatches = dot.matchAthlete(metalli, sindex, athleteMatches);
+						}
 						break;
 					}
 				}
+			}					
+			for (Dot match : athleteMatches){
+				highlightedDots.add(match);
 			}
 		}
 	}
@@ -127,7 +168,7 @@ public class Graphrame {
 		drawConnektors();
 		drawDots();
 		
-		if(highlighted != null) drawHighlighted();
+		if(highlightedDots != null) drawHighlighted();
 	}
 	
 	private void drawMenu(){
@@ -241,20 +282,22 @@ public class Graphrame {
 	
 	private void drawHighlighted()
 	{
-		papa.line(highlighted.x, highlighted.y, x, highlighted.y);
-		papa.line(highlighted.x, highlighted.y, highlighted.x, y + h);
-		
-		papa.line(highlighted.x, highlighted.y, highlighted.x + 36, highlighted.y - 36);
-		papa.fill(Dot.colors[highlighted.medal]);
-		papa.rect(highlighted.x + 36, highlighted.y - 76, papa.textWidth(highlighted.athlete.get(0)) + 4, 40, 4);	// height 40
-		
-		papa.fill(0);
-		papa.textAlign(PConstants.LEFT);
-		papa.text(highlighted.athlete.get(0), highlighted.x + 36 + 2, highlighted.y - 76 + 12);
-		papa.text(highlighted.country.get(0), highlighted.x + 36 + 2, highlighted.y - 76 + 24);
-		papa.text(highlighted.score  , highlighted.x + 36 - 1, highlighted.y - 76 + 36);
-		
-		highlighted.draw();
+		for (Dot highlighted : highlightedDots){
+			papa.line(highlighted.x, highlighted.y, x, highlighted.y);
+			papa.line(highlighted.x, highlighted.y, highlighted.x, y + h);
+			
+			papa.line(highlighted.x, highlighted.y, highlighted.x + 36, highlighted.y - 36);
+			papa.fill(Dot.colors[highlighted.medal]);
+			papa.rect(highlighted.x + 36, highlighted.y - 76, papa.textWidth(highlighted.athlete.get(0)) + 4, 40, 4);	// height 40
+			
+			papa.fill(0);
+			papa.textAlign(PConstants.LEFT);
+			papa.text(highlighted.athlete.get(0), highlighted.x + 36 + 2, highlighted.y - 76 + 12);
+			papa.text(highlighted.country.get(0), highlighted.x + 36 + 2, highlighted.y - 76 + 24);
+			papa.text(highlighted.score  , highlighted.x + 36 - 1, highlighted.y - 76 + 36);
+			
+			highlighted.draw();
+		}
 	}
 	
 	/**
