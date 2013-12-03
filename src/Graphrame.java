@@ -35,10 +35,13 @@ public class Graphrame {
 	float[] xTicks, yTicks;
 	float[] yLabels;		// set with yTicks
 	
+	String title = "";
+	
 	Dot[] metalli;
-	int[] gindex, sindex, bindex;	// double array
+	int[] gindex, sindex, bindex;
 	
 	ArrayList<Dot> highlightedDots = new ArrayList<Dot>();
+	Dot mouseDot = null;
 
 	boolean drawGold = true;
 	boolean drawSilver = true;
@@ -54,7 +57,7 @@ public class Graphrame {
 		this.papa = papa;
 	}
 	
-	public void handOver(ArrayList<Dot> dots)
+	public void begin(ArrayList<Dot> dots)
 	{
 		metalli = dots.toArray(new Dot[dots.size()]);
 		
@@ -81,7 +84,7 @@ public class Graphrame {
 		}
 	}
 	
-	public void initialize(int season, int yscale)
+	public void plant(int season, int yscale)
 	{
 		plantXTicks(season);
 		plantYTicks(yscale);
@@ -89,15 +92,76 @@ public class Graphrame {
 			plantDot(dot);
 	}
 	
+	/**
+	 * Tick marks for summer or winter years.
+	 * 
+	 * @param season 0 for summer and 1 for winter.
+	 */
+	private void plantXTicks(int season)
+	{
+		years = season == 0 ? summers : winters;
+		
+		float gap = w/years.length,
+			  xPos = x;
+		
+		xTicks = new float[years.length];
+		
+		for(int i = 0; i < years.length; i++)
+		{
+			xPos += gap;
+			xTicks[i] = xPos;
+		}
+	}
+	
+	/**
+	 * Specify 0 or 1 for "scaling mode" and the number of the tick marks you want.
+	 * 
+	 * @param scale 0 to begin at 0, 1 to begin at lower bound.
+	 * @param ymarks the number of tick marks you want.
+	 */
+	private void plantYTicks(int scale)
+	{
+		yscale = scale;
+		
+		ubound = upperBound(max(scores));
+		lbound = (scale == 0) ? 0 : lowerBound(min(scores));
+
+		float increment = (ubound - lbound)/(ymarks),
+			  gap = h/ymarks,
+			  yPos = y + h;
+		
+		yTicks  = new float[ymarks];
+		yLabels = new float[ymarks];
+		
+		for(int i = 0; i < ymarks; i++)
+		{
+			yTicks[i]  = yPos -= gap;
+			yLabels[i] = lbound + increment*(i + 1);	// min += increment;
+		}
+	}
+	
+	/**
+	 * Sets a Dot object's x/y coordinate.
+	 * 
+	 * @param dot the dot
+	 */
+	private void plantDot(Dot dot)
+	{
+		dot.x = xTicks[indexOfYear(dot.year)];
+		dot.y = (y + h)	- (dot.score - lbound)/(ubound - lbound)*(y + h - yTicks[yTicks.length - 1]);
+	}
+	
 	public void highlight()
 	{
 		if(highlightedDots.size() != 0)
 		{
 			boolean anyHighlighted = false;
+			mouseDot = null;
 			//if none of the dots are moused over, highlight nothing
 			for (Dot highlightDot : highlightedDots){
 				if (highlightDot.moused()){
 					anyHighlighted = true;
+					mouseDot = highlightDot;	// I did this
 					break;
 				}
 			}
@@ -162,13 +226,24 @@ public class Graphrame {
 	 */
 	public void draw()
 	{
+		papa.textAlign(PConstants.CENTER);
+		papa.textSize(24);
+		papa.fill(0);
+		papa.text(title, (x + w)/2, y);
+		
 		drawMenu();
 		drawAxes();
 		drawTicks();
 		drawConnektors();
 		drawDots();
 		
-		if(highlightedDots != null) drawHighlighted();
+		if(highlightedDots.size() != 0) {	// != null) {
+			drawHighlighted();
+		}
+		
+		if(mouseDot != null) {
+			drawMoused();
+		}
 	}
 	
 	private void drawMenu(){
@@ -214,6 +289,7 @@ public class Graphrame {
 	{
 		papa.textAlign(PConstants.CENTER);
 		papa.fill(0);
+		papa.textSize(11);
 		
 		for(int i = 0; i < xTicks.length; i++)
 		{
@@ -282,81 +358,45 @@ public class Graphrame {
 	
 	private void drawHighlighted()
 	{
-		for (Dot highlighted : highlightedDots){
-			papa.line(highlighted.x, highlighted.y, x, highlighted.y);
-			papa.line(highlighted.x, highlighted.y, highlighted.x, y + h);
-			
-			papa.line(highlighted.x, highlighted.y, highlighted.x + 36, highlighted.y - 36);
-			papa.fill(Dot.colors[highlighted.medal]);
-			papa.rect(highlighted.x + 36, highlighted.y - 76, papa.textWidth(highlighted.athlete.get(0)) + 4, 40, 4);	// height 40
-			
-			papa.fill(0);
-			papa.textAlign(PConstants.LEFT);
-			papa.text(highlighted.athlete.get(0), highlighted.x + 36 + 2, highlighted.y - 76 + 12);
-			papa.text(highlighted.country.get(0), highlighted.x + 36 + 2, highlighted.y - 76 + 24);
-			papa.text(highlighted.score  , highlighted.x + 36 - 1, highlighted.y - 76 + 36);
-			
-			highlighted.draw();
+//		for (Dot highlighted : highlightedDots){
+//			papa.line(highlighted.x, highlighted.y, x, highlighted.y);
+//			papa.line(highlighted.x, highlighted.y, highlighted.x, y + h);
+//			
+//			papa.line(highlighted.x, highlighted.y, highlighted.x + 36, highlighted.y - 36);
+//			papa.fill(Dot.colors[highlighted.medal]);
+//			papa.rect(highlighted.x + 36, highlighted.y - 76, papa.textWidth(highlighted.athlete.get(0)) + 4, 40, 4);	// height 40
+//			
+//			papa.fill(0);
+//			papa.textAlign(PConstants.LEFT);
+//			papa.text(highlighted.athlete.get(0), highlighted.x + 36 + 2, highlighted.y - 76 + 12);
+//			papa.text(highlighted.country.get(0), highlighted.x + 36 + 2, highlighted.y - 76 + 24);
+//			papa.text(highlighted.score  , highlighted.x + 36 - 1, highlighted.y - 76 + 36);
+//			
+//			highlighted.draw();
+//		}
+		
+		for(Dot highlighted : highlightedDots) {
+			highlighted.highlight();
 		}
 	}
 	
-	/**
-	 * Tick marks for summer or winter years.
-	 * 
-	 * @param season 0 for summer and 1 for winter.
-	 */
-	private void plantXTicks(int season)
+	private void drawMoused()
 	{
-		years = season == 0 ? summers : winters;
+		papa.strokeWeight(1f);
+		papa.line(mouseDot.x, mouseDot.y, x, mouseDot.y);
+		papa.line(mouseDot.x, mouseDot.y, mouseDot.x, y + h);
 		
-		float gap = w/years.length,
-			  xPos = x;
+		papa.line(mouseDot.x, mouseDot.y, mouseDot.x + 36, mouseDot.y - 36);
+		papa.fill(Dot.colors[mouseDot.medal]);
+		papa.rect(mouseDot.x + 36, mouseDot.y - 76, papa.textWidth(mouseDot.athlete.get(0)) + 4, 40, 4);	// height 40
 		
-		xTicks = new float[years.length];
+		papa.fill(0);
+		papa.textAlign(PConstants.LEFT);
+		papa.text(mouseDot.athlete.get(0), mouseDot.x + 36 + 2, mouseDot.y - 76 + 12);
+		papa.text(mouseDot.country.get(0), mouseDot.x + 36 + 2, mouseDot.y - 76 + 24);
+		papa.text(mouseDot.score  , mouseDot.x + 36 - 1, mouseDot.y - 76 + 36);
 		
-		for(int i = 0; i < years.length; i++)
-		{
-			xPos += gap;
-			xTicks[i] = xPos;
-		}
-	}
-	
-	/**
-	 * Specify 0 or 1 for "scaling mode" and the number of the tick marks you want.
-	 * 
-	 * @param scale 0 to begin at 0, 1 to begin at lower bound.
-	 * @param ymarks the number of tick marks you want.
-	 */
-	private void plantYTicks(int scale)
-	{
-		yscale = scale;
-		
-		ubound = upperBound(max(scores));
-		lbound = (scale == 0) ? 0 : lowerBound(min(scores));
-
-		float increment = (ubound - lbound)/(ymarks),
-			  gap = h/ymarks,
-			  yPos = y + h;
-		
-		yTicks  = new float[ymarks];
-		yLabels = new float[ymarks];
-		
-		for(int i = 0; i < ymarks; i++)
-		{
-			yTicks[i]  = yPos -= gap;
-			yLabels[i] = lbound + increment*(i + 1);	// min += increment;
-		}
-	}
-	
-	/**
-	 * Sets a Dot object's x/y coordinate.
-	 * 
-	 * @param dot the dot
-	 */
-	private void plantDot(Dot dot)
-	{
-		dot.x = xTicks[indexOfYear(dot.year)];
-		dot.y = (y + h)	- (dot.score - lbound)/(ubound - lbound)*(y + h - yTicks[yTicks.length - 1]);
+		mouseDot.draw();
 	}
 
 	/**

@@ -10,9 +10,11 @@ import controlP5.*;
 public class Olympia extends PApplet {
 
 	private static final long serialVersionUID = 1L;
+	
 	ControlP5 cp5;
 	DropdownList sportList;
 	int dropdownCount = 0;
+	
 	int summer = 0, 
 	    winter = 1;
 	int yscale = 1;
@@ -21,7 +23,7 @@ public class Olympia extends PApplet {
 	
 	public static void main(String[] args)
 	{
-		PApplet.main(new String[] { "--present", "Olympia" });
+		PApplet.main(new String[] { "Olympia" });
 	}
 
 	public void setup()
@@ -42,13 +44,12 @@ public class Olympia extends PApplet {
 	{
 		background(255);
 		grapheme.draw();
-		
 	}
 	
 	public void mouseMoved()
 	{
-		background(255);
-		grapheme.draw();
+		// background(255);
+		// grapheme.draw();
 		grapheme.highlight();
 	}
 	
@@ -61,11 +62,14 @@ public class Olympia extends PApplet {
 		grapheme = new Graphrame(this);
 		allDots = new ArrayList<Dot>();
 		
-		for(String sub : loadStrings(filename))
+		String[] loads = loadStrings(filename);
+		grapheme.title = loads[0].split(",")[1];
+		
+		for(String sub : loads)
 			parser(sub.split(","));
 		
-		grapheme.handOver(allDots);
-		grapheme.initialize(summer, yscale);
+		grapheme.begin(allDots);
+		grapheme.plant(summer, yscale);
 	}
 	
 	/**

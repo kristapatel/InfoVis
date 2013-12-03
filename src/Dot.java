@@ -24,8 +24,6 @@ public class Dot {
 	ArrayList<String> country;
 	float score;
 	
-	// ArrayList<Dot> links = new ArrayList<Dot>();
-	
 	/**
 	 * Constructor.
 	 * 
@@ -76,6 +74,14 @@ public class Dot {
 		papa.ellipse(x, y, diameter, diameter);
 	}
 	
+	public void highlight()
+	{
+		// highlighted = !highlighted;
+		papa.strokeWeight(2f);
+		papa.fill(0xFFFF0000);	// colors[medal], 1);
+		papa.ellipse(x, y, diameter, diameter);
+	}
+	
 	/**
 	 * Highlighter.
 	 */
@@ -84,23 +90,13 @@ public class Dot {
 		return highlighted = (PApplet.abs(x - papa.mouseX) <= radius) && (PApplet.abs(y - papa.mouseY) <= radius);
 	}
 	
-	public void highlight()
-	{
-		highlighted = !highlighted;
-	}
-	
-	public void link(Dot dot)
-	{
-		
-	}
-	
 	public ArrayList<Dot> matchAthlete(Dot[] dots, int[] indices, ArrayList<Dot> matches)
 	{
-		for (String ath : athlete){
-			for (int i = indices[0]; i < indices.length; i++){
-				for (String ath2: dots[indices[i]].athlete){
-					if (ath.equals(ath2)){
-						System.out.println("YES");
+		for (String ath : athlete) {
+			for (int i = indices[0]; i < indices.length; i++) {
+				for (String ath2: dots[indices[i]].athlete) {
+					if (ath.equals(ath2)) {
+						// System.out.println("YES");
 						matches.add(dots[indices[i]]);
 					}
 				}
