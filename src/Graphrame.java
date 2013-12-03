@@ -11,13 +11,13 @@ public class Graphrame {
 
 	PApplet papa;	// reference to Olympia to allow use of Processing library
 	
-	static int[] summers = { 1900, 1904, 1908, 1912, 1916, 1920, 1924, 
+	/*static int[] summers = { 1900, 1904, 1908, 1912, 1916, 1920, 1924, 
 							 1928, 1932, 1936, 1940, 1944, 1948, 1952, 
 							 1956, 1960, 1964, 1968, 1972, 1976, 1980, 
 							 1984, 1988, 1992, 1996, 2000, 2004, 2008 };	// ignore 1906
 	
 	static int[] winters = { 1924, 1928, 1932, 1936, 1940, 1944, 1948, 1952, 1956, 1960, 1964, 
-							 1968, 1972, 1976, 1980, 1984, 1988, 1992, 1994, 1998, 2002, 2006 };
+							 1968, 1972, 1976, 1980, 1984, 1988, 1992, 1994, 1998, 2002, 2006 };*/ 
 	
 	float x = 100, 
 		  y = 100, 
@@ -25,6 +25,8 @@ public class Graphrame {
 		  w = 1000;
 	
 	int[] years;	// set with xTicks
+	
+	int xLower, xUpper; //bounds for tick marks (years)
 	
 	int yscale,
 		ymarks = 10;		// set with yTicks
@@ -60,6 +62,9 @@ public class Graphrame {
 	public void begin(ArrayList<Dot> dots)
 	{
 		metalli = dots.toArray(new Dot[dots.size()]);
+		for (Dot d : metalli){
+			System.out.println(d.toString());
+		}
 		
 		int gi = 0, si = 0, bi = 0, fi = 0;
 		int size = metalli.length;
@@ -99,18 +104,21 @@ public class Graphrame {
 	 */
 	private void plantXTicks(int season)
 	{
-		years = season == 0 ? summers : winters;
 		
-		float gap = w/years.length,
-			  xPos = x;
+		int numTicks = (xUpper - xLower)/4 + 1;
+		float gap = w/numTicks;
+		float xPos = x;
 		
-		xTicks = new float[years.length];
-		
-		for(int i = 0; i < years.length; i++)
+		xTicks = new float[numTicks]; //this is an array of floats with the positions of the tickmarks for each year
+		years = new int[numTicks];	//this is an arrays of ints with the years 
+
+		for(int i = 0; i < numTicks; i++)
 		{
 			xPos += gap;
 			xTicks[i] = xPos;
+			years[i] = xLower + 4*i;
 		}
+
 	}
 	
 	/**
@@ -290,11 +298,13 @@ public class Graphrame {
 		papa.textAlign(PConstants.CENTER);
 		papa.fill(0);
 		papa.textSize(11);
-		
+		int year = xLower;
+
 		for(int i = 0; i < xTicks.length; i++)
 		{
 			papa.line(xTicks[i], y + h + 1, xTicks[i], y + h + 8);
-			papa.text(years[i], xTicks[i], y + h + 24);
+			papa.text(year, xTicks[i], y + h + 24);
+			year = year + 4;
 		}
 		
 		for(int i = 0; i < yTicks.length; i++)

@@ -63,7 +63,11 @@ public class Olympia extends PApplet {
 		allDots = new ArrayList<Dot>();
 		
 		String[] loads = loadStrings(filename);
+
 		grapheme.title = loads[0].split(",")[1];
+		grapheme.xLower = Integer.parseInt(loads[0].substring(0, 4));
+		grapheme.xUpper = Integer.parseInt(loads[loads.length-1].substring(0, 4));
+		
 		
 		for(String sub : loads)
 			parser(sub.split(","));
@@ -114,6 +118,7 @@ public class Olympia extends PApplet {
 		list.setBarHeight(15);
 		list.addItem("Men's Discus", 0);
 		list.addItem("Women's 400M Swimming", 1);
+		list.addItem("Women's 100M Freestyle Swimming", 2);
 		list.setColorBackground(color(60));
 		list.setColorActive(color(255, 128));
 	}
@@ -130,8 +135,11 @@ public class Olympia extends PApplet {
 			  if (event.getGroup().getValue() == 0){
 				  loadSet("tf_discus_men.csv");
 			  }
-			  else{
+			  else if (event.getGroup().getValue() == 1){
 				  loadSet("tf_400m_women.csv");
+			  }
+			  else if (event.getGroup().getValue() == 2){
+				  loadSet("swim_100m_free_women.csv");
 			  }
 		  } 
 
