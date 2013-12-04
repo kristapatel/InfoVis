@@ -20,11 +20,13 @@ public class Graphrame {
 							 1968, 1972, 1976, 1980, 1984, 1988, 1992, 1994, 1998, 2002, 2006 };*/ 
 	
 	float x = 100, 
-		  y = 100, 
+		  y = 30, 
 	  	  h = 600, 
 		  w = 1000;
 	
 	int[] years;	// set with xTicks
+	
+	String scoreUnit; //the unit the score is in (e.g. meters or s)
 	
 	int xLower, xUpper; //bounds for tick marks (years)
 	
@@ -62,9 +64,9 @@ public class Graphrame {
 	public void begin(ArrayList<Dot> dots)
 	{
 		metalli = dots.toArray(new Dot[dots.size()]);
-		for (Dot d : metalli){
+		/*for (Dot d : metalli){
 			System.out.println(d.toString());
-		}
+		}*/
 		
 		int gi = 0, si = 0, bi = 0, fi = 0;
 		int size = metalli.length;
@@ -72,7 +74,6 @@ public class Graphrame {
 		gindex = new int[size/3];
 		sindex = new int[size/3];
 		bindex = new int[size/3];
-		
 		scores = new float[size];
 		
 		for(int i = 0; i < size; i++)
@@ -278,6 +279,13 @@ public class Graphrame {
 			papa.fill(0xFFFFFF);
 		}
 		papa.rect(1150, 270, 20, 20);
+		
+		papa.fill(0x000000);
+		papa.textSize(16);
+		papa.textAlign(2);
+		papa.text("Show Gold", 1175, 215);
+		papa.text("Show Silver", 1175, 250);
+		papa.text("Show Bronze", 1175, 285);
 	}
 	
 	
@@ -310,7 +318,7 @@ public class Graphrame {
 		for(int i = 0; i < yTicks.length; i++)
 		{
 			papa.line(x - 1, yTicks[i], x - 8, yTicks[i]);
-			papa.text((int)yLabels[i], x - 24, yTicks[i] + 4);
+			papa.text(((int)yLabels[i] +" " + scoreUnit), x - 24, yTicks[i] + 4);
 		}
 	}
 

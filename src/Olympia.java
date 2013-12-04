@@ -20,6 +20,7 @@ public class Olympia extends PApplet {
 	int yscale = 1;
 	Graphrame grapheme;
 	ArrayList<Dot> allDots;	
+	boolean scoreMode;
 	
 	public static void main(String[] args)
 	{
@@ -28,15 +29,15 @@ public class Olympia extends PApplet {
 
 	public void setup()
 	{
-		size(1280, 800);
+		size(1280, 1000);
 		frameRate(8);
 		textSize(11);
 		loadSet("tf_discus_men.csv");
-		
+		scoreMode = true;
 		//The following is for the dropdown menu
 		cp5 = new ControlP5(this);
 		sportList = cp5.addDropdownList("sportsList");
-		sportList.setPosition(1150, 500);
+		sportList.setPosition(1125, 500);
 		customizeList(sportList);
 	}
 	
@@ -63,8 +64,17 @@ public class Olympia extends PApplet {
 		allDots = new ArrayList<Dot>();
 		
 		String[] loads = loadStrings(filename);
-
-		grapheme.title = loads[0].split(",")[1];
+		grapheme.title = loads[0].split(",")[1]; //keep this for now
+		
+		//The score unit is used for drawing the y-axis ticks and more descriptive titles
+		if (filename.equals("tf_discus_men.csv")){
+			grapheme.scoreUnit = "m";
+			grapheme.title = "Men's Discus Throw";
+		}
+		else if (filename.equals("tf_400m_women.csv")){
+			grapheme.scoreUnit = "s";
+			grapheme.title = "Women's 400m Swimming";
+		}
 		grapheme.xLower = Integer.parseInt(loads[0].substring(0, 4));
 		grapheme.xUpper = Integer.parseInt(loads[loads.length-1].substring(0, 4));
 		
@@ -116,7 +126,8 @@ public class Olympia extends PApplet {
 		list.setBackgroundColor(color(190));
 		list.setItemHeight(20);
 		list.setBarHeight(15);
-		list.addItem("Men's Discus", 0);
+		list.setWidth(150);
+		list.addItem("Men's Discus Throw", 0);
 		list.addItem("Women's 400M Swimming", 1);
 		list.addItem("Women's 100M Freestyle Swimming", 2);
 		list.setColorBackground(color(60));
@@ -133,6 +144,7 @@ public class Olympia extends PApplet {
 		  if (event.isGroup()) {
 		    // check if the Event was triggered from a ControlGroup
 			  if (event.getGroup().getValue() == 0){
+				  grapheme.scoreUnit = "meters";
 				  loadSet("tf_discus_men.csv");
 			  }
 			  else if (event.getGroup().getValue() == 1){
