@@ -29,7 +29,7 @@ public class Olympia extends PApplet {
 
 	public void setup()
 	{
-		size(1280, 1000);
+		size(1280, 900);
 		frameRate(8);
 		textSize(11);
 		loadSet("tf_discus_men.csv");
@@ -37,7 +37,7 @@ public class Olympia extends PApplet {
 		//The following is for the dropdown menu
 		cp5 = new ControlP5(this);
 		sportList = cp5.addDropdownList("sportsList");
-		sportList.setPosition(1125, 500);
+		sportList.setPosition(1125, 400);
 		customizeList(sportList);
 	}
 	
