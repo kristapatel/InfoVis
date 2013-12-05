@@ -96,7 +96,6 @@ public class Dot {
 			for (int i = indices[0]; i < indices.length; i++) {
 				for (String ath2: dots[indices[i]].athlete) {
 					if (ath.equals(ath2)) {
-						// System.out.println("YES");
 						matches.add(dots[indices[i]]);
 					}
 				}

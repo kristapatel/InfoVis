@@ -406,7 +406,7 @@ public class Graphrame {
 		
 		papa.line(mouseDot.x, mouseDot.y, mouseDot.x + 36, mouseDot.y - 36);
 		papa.fill(Dot.colors[mouseDot.medal]);
-		papa.rect(mouseDot.x + 36, mouseDot.y - 76, papa.textWidth(mouseDot.athlete.get(0)) + 4, 40, 4);	// height 40
+		papa.rect(mouseDot.x + 36, mouseDot.y - 76, Math.max(papa.textWidth(mouseDot.athlete.get(0)) + 4, papa.textWidth(mouseDot.country.get(0)) +4), 40, 4);	// height 40
 		
 		papa.fill(0);
 		papa.textAlign(PConstants.LEFT);

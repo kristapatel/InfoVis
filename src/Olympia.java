@@ -96,7 +96,7 @@ public class Olympia extends PApplet {
 		int year = Integer.parseInt(sub[0]);
 		String athlete = sub[2];
 		String metal = sub[3];
-		String country = sub[4];
+		String country = setCountry(sub[4]);
 		float score = Float.parseFloat(sub[5]);
 	
 		if(score == 0)
@@ -122,6 +122,12 @@ public class Olympia extends PApplet {
 		allDots.add(new Dot(this, 0, 0).setAthlete(year, athlete, medal, country, score));
 	}
 	
+	
+	/**
+	 * This method formats the dropdown list.
+	 * 
+	 * @param list Dropdown list object
+	 */
 	public void customizeList(DropdownList list){
 		list.setBackgroundColor(color(190));
 		list.setItemHeight(20);
@@ -156,4 +162,96 @@ public class Olympia extends PApplet {
 		  } 
 
 		}
+	
+	/**
+	 * This method returns the full country name given the country code
+	 * @par
+	 */
+	public String setCountry(String countryCode){
+		if (countryCode.equals("ANZ")){
+			return "Australia/New Zealand";
+		}
+		else if (countryCode.equals("AUS")){
+			return "Australia";
+		}
+		else if (countryCode.equals("BAH")){
+			return "Bahamas";
+		}
+		else if (countryCode.equals("BLR")){
+			return "Belarus";
+		}
+		else if (countryCode.equals("BOH")){
+			return "Bohemia";
+		}
+		else if (countryCode.equals("COL")){
+			return "Colombia";
+		}
+		else if (countryCode.equals("CUB")){
+			return "Cuba";
+		}
+		else if (countryCode.equals("CZE")){
+			return "Czechoslovakia";
+		}
+		else if (countryCode.equals("EST")){
+			return "Estonia";
+		}
+		else if (countryCode.equals("FIN")){
+			return "Finland";
+		}
+		else if (countryCode.equals("FRA")){
+			return "France";
+		}
+		else if (countryCode.equals("FRG")){
+			return "West Germany";
+		}
+		else if (countryCode.equals("GBR")){
+			return "Great Britain";
+		}
+		else if (countryCode.equals("GER")){
+			return "Germany";
+		}
+		else if (countryCode.equals("GDR")){
+			return "East Germany";
+		}
+		else if (countryCode.equals("GRE")){
+			return "Greece";
+		}
+		else if (countryCode.equals("HUN")){
+			return "Hungary";
+		}
+		else if (countryCode.equals("ITA")){
+			return "Italy";
+		}
+		else if (countryCode.equals("JAM")){
+			return "Jamaica";
+		}
+		else if (countryCode.equals("LTU")){
+			return "Lithuania";
+		}
+		else if (countryCode.equals("MEX")){
+			return "Mexico";
+		}
+		else if (countryCode.equals("NGR")){
+			return "Nigeria";
+		}
+		else if (countryCode.equals("POL")){
+			return "Poland";
+		}
+		else if (countryCode.equals("RSA")){
+			return "Russia";
+		}
+		else if (countryCode.equals("SWE")){
+			return "Sweden";
+		}
+		else if (countryCode.equals("URS")){
+			return "Soviet Union";
+		}
+		else if (countryCode.equals("USA")){
+			return "United States of America";
+		}
+		else{
+			return countryCode;
+		}
+		
+	}
 }
