@@ -1,5 +1,7 @@
 import processing.core.*;
+
 import java.util.ArrayList;
+
 import controlP5.*;
 
 /**
@@ -51,10 +53,20 @@ public class Olympia extends PApplet {
 		fill(0);
 		for(int i=0; i < countryMedalsList.size(); i++) {
 			country = countryMedalsList.get(i);
-			image(country.getFlag(), 55 + i*45, 760);
+			image(country.getFlag(), country.x, country.y);
 			text(country.getGold(), 68 + i*45, 801);
 			text(country.getSilver(), 68 + i*45, 841);
 			text(country.getSilver(), 68 + i*45, 881);
+			
+			if ((mouseX >= country.x) && (mouseX <= country.x+country.getWidth())
+					&& (mouseY >= country.y) && (mouseY <= country.y+country.getHeight())) {
+				strokeWeight(1f);
+				line(mouseX, mouseY, mouseX + 20, mouseY - 20);
+				//fill(0xFFCCCCCC);
+				//rect(mouseX + 20, mouseY - 40, textWidth(country.getCountry()) + 4, 30, 4);
+				//fill(0);
+				text(country.getCountry(), mouseX+55, mouseY-22);
+			}
 		}
 	}
 	
@@ -125,11 +137,12 @@ public class Olympia extends PApplet {
 		for(String sub : loads)
 			parser(sub.split(","));
 		
-		for(Dot d: allDots) {
+		for(int m=0; m<allDots.size(); m++) {
 //			Dot d = allDots.get(0);
 //				for (int i = 0; i < d.country.size(); i++) {
 //					System.out.println("size is: " + d.country.size() + "      and index " + i + " is " + d.country.get(i));
 //				}
+			Dot d = allDots.get(m);
 			boolean alreadyHaveCountry = false;
 			String country = d.country.get(0);
 			for(int i=0; i < countryMedalsList.size(); i++) {
@@ -243,7 +256,8 @@ public class Olympia extends PApplet {
 					flag = "zam.png";
 				else
 					flag = "what.png";
-				CountryMedals newCountry = new CountryMedals(d.country.get(0), loadImage(flag));
+				CountryMedals newCountry = new CountryMedals(d.country.get(0), loadImage(flag),
+						55+(countryMedalsList.size()*45), 760);
 				if (d.medal == 0)
 					newCountry.incrementGold();
 				else if (d.medal == 1)
