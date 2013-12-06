@@ -17,6 +17,7 @@ public class Dot {
 	float x, y;
 	
 	boolean highlighted = false;
+	boolean drawn;
 	
 	int year;
 	ArrayList<String> athlete;
@@ -32,13 +33,14 @@ public class Dot {
 	 * @param y y-coordinate
 	 * @param medalist the lucky winner
 	 */
-	public Dot(PApplet papa, float x, float y)
+	public Dot(PApplet papa, float x, float y, boolean drawn)
 	{
 		this.papa = papa;
 		this.x = x;
 		this.y = y;
 		this.athlete = new ArrayList<String>();
 		this.country = new ArrayList<String>();
+		this.drawn = drawn;
 	}
 	
 	public Dot setAthlete(int year, String athlete, int medal, String country, float score)
@@ -48,6 +50,7 @@ public class Dot {
 		this.medal = medal;
 		this.country.add(country);
 		this.score = score;
+		this.drawn = drawn;
 		
 		return this;
 	}

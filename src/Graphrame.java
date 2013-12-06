@@ -1,5 +1,8 @@
 import processing.core.*;
+
 import java.util.ArrayList;
+
+import controlP5.*;
 
 
 /**
@@ -50,6 +53,9 @@ public class Graphrame {
 	boolean drawGold = true;
 	boolean drawSilver = true;
 	boolean drawBronze = true;
+	Range yearSlider;
+	DropdownList sportList;
+	
 
 	/**
 	 * Constructor.
@@ -59,6 +65,15 @@ public class Graphrame {
 	public Graphrame(PApplet papa)
 	{
 		this.papa = papa;
+		ControlP5 control = new ControlP5(papa);
+		sportList = control.addDropdownList("sportsList");
+		yearSlider = control.addRange("yearSlider");
+		sportList.setPosition(1125, 500);
+		yearSlider.setPosition(1125, 600);
+		customizeList(sportList);
+		customizeSlider(yearSlider);
+
+
 	}
 	
 	public void begin(ArrayList<Dot> dots)
@@ -88,9 +103,9 @@ public class Graphrame {
 		}
 	}
 	
-	public void plant(int season, int yscale)
+	public void plant(int yscale)
 	{
-		plantXTicks(season);
+		plantXTicks();
 		plantYTicks(yscale);
 		for(Dot dot : metalli)
 			plantDot(dot);
@@ -101,7 +116,7 @@ public class Graphrame {
 	 * 
 	 * @param season 0 for summer and 1 for winter.
 	 */
-	private void plantXTicks(int season)
+	private void plantXTicks()
 	{
 		
 		int numTicks = (xUpper - xLower)/4 + 1;
@@ -245,6 +260,7 @@ public class Graphrame {
 		drawTicks();
 		drawConnektors();
 		drawDots();
+
 		
 		if(highlightedDots.size() != 0) {	// != null) {
 			drawHighlighted();
@@ -254,6 +270,7 @@ public class Graphrame {
 			drawMoused();
 		}
 	}
+	
 	
 	private void drawMenu(){
 		if (drawGold){
@@ -331,7 +348,7 @@ public class Graphrame {
 		if (drawGold){
 			papa.beginShape();
 			for(int i : gindex){
-				if (metalli[i].score != 0){
+				if (metalli[i].drawn){
 					papa.vertex(metalli[i].x, metalli[i].y);
 				}
 			}
@@ -341,7 +358,7 @@ public class Graphrame {
 		if (drawSilver){
 			papa.beginShape();
 			for(int i : sindex){
-				if (metalli[i].score != 0){
+				if (metalli[i].drawn){
 					papa.vertex(metalli[i].x, metalli[i].y);
 				}
 			}
@@ -351,7 +368,7 @@ public class Graphrame {
 		if (drawBronze){
 			papa.beginShape();
 			for(int i : bindex){
-				if (metalli[i].score != 0){
+				if (metalli[i].drawn){
 					papa.vertex(metalli[i].x, metalli[i].y);
 				}
 			}
@@ -364,7 +381,7 @@ public class Graphrame {
 		if (drawGold){
 			papa.beginShape();
 			for (int i : gindex){
-				if (metalli[i].score != 0){
+				if (metalli[i].drawn){
 					metalli[i].draw();
 				}
 			}
@@ -373,7 +390,7 @@ public class Graphrame {
 		if (drawSilver){
 			papa.beginShape();
 			for (int i : sindex){
-				if (metalli[i].score != 0){
+				if (metalli[i].drawn){
 					metalli[i].draw();
 				}
 			}
@@ -382,7 +399,7 @@ public class Graphrame {
 		if (drawBronze){
 			papa.beginShape();
 			for (int i : bindex){
-				if (metalli[i].score != 0){
+				if (metalli[i].drawn){
 					metalli[i].draw();
 				}
 			}
@@ -525,6 +542,13 @@ public class Graphrame {
 		return max;
 	}
 	
+	public void customizeSlider(Range slider){
+		slider.setRange(1900, 2008);
+		slider.setRangeValues(1900, 2008);
+		slider.setHeight(100);
+
+	}
+	
 	public void checkMenu(){
 		if (PApplet.abs(papa.mouseX - 1150) <= 20 && PApplet.abs(papa.mouseY - 200) <= 20){
 			drawGold = !drawGold;
@@ -536,4 +560,29 @@ public class Graphrame {
 			drawBronze = !drawBronze;
 		}
 	}
+	
+	public void checkSlider(){
+		xUpper = (int) yearSlider.getHighValue();
+		xLower = (int) yearSlider.getLowValue();
+	}
+	/**
+	 * This method formats the dropdown list.
+	 * 
+	 * @param list Dropdown list object
+	 */
+	public void customizeList(DropdownList list){
+		list.setBackgroundColor(papa.color(190));
+		list.setItemHeight(20);
+		list.setBarHeight(15);
+		list.setWidth(150);
+		list.addItem("Men's Discus Throw", 0);
+		list.addItem("Men's 5000m Track", 1);
+		list.addItem("Men's 400m Hurdles", 2);
+		list.addItem("Women's 400M Swimming", 3);
+		//list.addItem("Women's 100M Freestyle Swimming", 4);
+		list.setColorBackground(papa.color(60));
+		list.setColorActive(papa.color(255, 128));
+	}
+	
+	
 }

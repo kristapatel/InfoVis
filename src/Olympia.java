@@ -11,9 +11,10 @@ public class Olympia extends PApplet {
 
 	private static final long serialVersionUID = 1L;
 	
-	ControlP5 cp5;
-	DropdownList sportList;
-	int dropdownCount = 0;
+	//ControlP5 cp5;
+	//DropdownList sportList;
+	//Slider yearSlider;
+	//int dropdownCount = 0;
 	
 	int summer = 0, 
 	    winter = 1;
@@ -34,17 +35,13 @@ public class Olympia extends PApplet {
 		textSize(11);
 		loadSet("tf_discus_men.csv");
 		scoreMode = true;
-		//The following is for the dropdown menu
-		cp5 = new ControlP5(this);
-		sportList = cp5.addDropdownList("sportsList");
-		sportList.setPosition(1125, 400);
-		customizeList(sportList);
 	}
 	
 	public void draw()
 	{
 		background(255);
 		grapheme.draw();
+		//grapheme.drawSlider(yearSlider);
 	}
 	
 	public void mouseMoved()
@@ -56,6 +53,8 @@ public class Olympia extends PApplet {
 	
 	public void mouseReleased(){
 		grapheme.checkMenu();
+		grapheme.checkSlider();
+
 	}
 	
 	public void loadSet(String filename)
@@ -93,7 +92,7 @@ public class Olympia extends PApplet {
 			parser(sub.split(","));
 		
 		grapheme.begin(allDots);
-		grapheme.plant(summer, yscale);
+		grapheme.plant(yscale);
 	}
 	
 	/**
@@ -118,6 +117,12 @@ public class Olympia extends PApplet {
 		} else
 			score = Float.parseFloat(stringScore);
 		
+		boolean drawn = false;
+		if (score != 0){
+			drawn = true;
+		}
+		
+		
 		int medal;
 		if(metal.trim().equals("GOLD")) {
 			medal = 0;
@@ -134,28 +139,9 @@ public class Olympia extends PApplet {
 				return;
 			}
 		}
-		allDots.add(new Dot(this, 0, 0).setAthlete(year, athlete, medal, country, score));
+		allDots.add(new Dot(this, 0, 0, drawn).setAthlete(year, athlete, medal, country, score));
 	}
 	
-	
-	/**
-	 * This method formats the dropdown list.
-	 * 
-	 * @param list Dropdown list object
-	 */
-	public void customizeList(DropdownList list){
-		list.setBackgroundColor(color(190));
-		list.setItemHeight(20);
-		list.setBarHeight(15);
-		list.setWidth(150);
-		list.addItem("Men's Discus Throw", 0);
-		list.addItem("Men's 5000m Track", 1);
-		list.addItem("Men's 400m Hurdles", 2);
-		list.addItem("Women's 400M Swimming", 3);
-		//list.addItem("Women's 100M Freestyle Swimming", 4);
-		list.setColorBackground(color(60));
-		list.setColorActive(color(255, 128));
-	}
 	
 	public void controlEvent(ControlEvent event) {
 		  // DropdownList is of type ControlGroup.
