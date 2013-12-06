@@ -20,7 +20,8 @@ public class Olympia extends PApplet {
 	    winter = 1;
 	int yscale = 1;
 	Graphrame grapheme;
-	ArrayList<Dot> allDots;	
+	ArrayList<Dot> allDots;
+	ArrayList<CountryMedals> countryMedalsList;
 	boolean scoreMode;
 	
 	public static void main(String[] args)
@@ -42,6 +43,19 @@ public class Olympia extends PApplet {
 	{
 		background(255);
 		grapheme.draw();
+		image(loadImage("gold.png"), 5, 785);
+		image(loadImage("silver.png"), 5, 825);
+		image(loadImage("bronze.png"), 5, 865);
+		CountryMedals country;
+		textSize(16);
+		fill(0);
+		for(int i=0; i < countryMedalsList.size(); i++) {
+			country = countryMedalsList.get(i);
+			image(country.getFlag(), 55 + i*45, 760);
+			text(country.getGold(), 68 + i*45, 801);
+			text(country.getSilver(), 68 + i*45, 841);
+			text(country.getSilver(), 68 + i*45, 881);
+		}
 	}
 	
 	public void mouseMoved()
@@ -79,6 +93,7 @@ public class Olympia extends PApplet {
 	{
 		grapheme = new Graphrame(this);
 		allDots = new ArrayList<Dot>();
+		countryMedalsList = new ArrayList<CountryMedals>();
 		
 		String[] loads = loadStrings(filename);
 		
@@ -109,6 +124,135 @@ public class Olympia extends PApplet {
 		
 		for(String sub : loads)
 			parser(sub.split(","));
+		
+		for(Dot d: allDots) {
+//			Dot d = allDots.get(0);
+//				for (int i = 0; i < d.country.size(); i++) {
+//					System.out.println("size is: " + d.country.size() + "      and index " + i + " is " + d.country.get(i));
+//				}
+			boolean alreadyHaveCountry = false;
+			String country = d.country.get(0);
+			for(int i=0; i < countryMedalsList.size(); i++) {
+				CountryMedals currentCountry = countryMedalsList.get(i);
+				if (currentCountry.getCountry().equals(country)) {
+					alreadyHaveCountry = true;
+					if (d.medal == 0)
+						currentCountry.incrementGold();
+					else if (d.medal == 1)
+						currentCountry.incrementSilver();
+					else if (d.medal == 2)
+						currentCountry.incrementBronze();
+				}
+			}
+			if (!alreadyHaveCountry) {
+				String flag;
+				String name = d.country.get(0);
+				if (name.equals("United States of America"))
+					flag = "usa.png";
+				else if (name.equals("Algeria"))
+					flag = "alg.png";
+				else if (name.equals("Australia/New Zealand"))
+					flag = "anz.png";
+				else if (name.equals("Australia"))					
+					flag = "aus.png";
+				else if (name.equals("Bahamas"))
+					flag = "bah.png";
+				else if (name.equals("Belgium"))
+					flag = "bel.png";
+				else if (name.equals("Burundi"))
+					flag = "bdi.png";
+				else if (name.equals("Belarus"))
+					flag = "blr.png";
+				else if (name.equals("Bohemia"))
+					flag = "boh.png";
+				else if (name.equals("Canada"))
+					flag = "can.png";
+				else if (name.equals("Colombia"))
+					flag = "col.png";
+				else if (name.equals("Cuba"))
+					flag = "cub.png";
+				else if (name.equals("Czechoslovakia"))
+					flag = "cze.png";
+				else if (name.equals("Dominican Republic"))
+					flag = "dom.png";
+				else if (name.equals("Estonia"))
+					flag = "est.png";
+				else if (name.equals("Ethiopia"))
+					flag = "eth.png";
+				else if (name.equals("Finland"))
+					flag = "fin.png";
+				else if (name.equals("France"))
+					flag = "fra.png";
+				else if (name.equals("West Germany"))
+					flag = "frg.png";
+				else if (name.equals("Great Britain"))
+					flag = "gbr.png";
+				else if (name.equals("Germany"))
+					flag = "ger.png";
+				else if (name.equals("East Germany"))
+					flag = "gdr.png";
+				else if (name.equals("Greece"))
+					flag = "gre.png";
+				else if (name.equals("Hungary"))
+					flag = "hun.png";
+				else if (name.equals("Ireland"))
+					flag = "irl.png";
+				else if (name.equals("Italy"))
+					flag = "ita.png";
+				else if (name.equals("Jamaica"))
+					flag = "jam.png";
+				else if (name.equals("Kenya"))
+					flag = "ken.png";
+				else if (name.equals("Saudi Arabia"))
+					flag = "ksa.png";
+				else if (name.equals("Lithuania"))
+					flag = "ltu.png";
+				else if (name.equals("Mexico"))
+					flag = "mex.png";
+				else if (name.equals("Morocco"))
+					flag = "mar.png";
+				else if (name.equals("The Netherlands"))
+					flag = "ned.png";
+				else if (name.equals("Nigeria"))
+					flag = "ngr.png";
+				else if (name.equals("New Zealand"))
+					flag = "nzl.png";
+				else if (name.equals("Philippines"))
+					flag = "phi.png";
+				else if (name.equals("Poland"))
+					flag = "pol.png";
+				else if (name.equals("Portugal"))
+					flag = "por.png";
+				else if (name.equals("Russia"))
+					flag = "rsa.png";
+				else if (name.equals("Senegal"))
+					flag = "sen.png";
+				else if (name.equals("Sri Lanka"))
+					flag = "sri.png";
+				else if (name.equals("Switzerland"))
+					flag = "sui.png";
+				else if (name.equals("Sweden"))
+					flag = "swe.png";
+				else if (name.equals("Tanzania"))
+					flag = "tan.png";
+				else if (name.equals("Tunisia"))
+					flag = "tun.png";
+				else if (name.equals("Soviet Union"))
+					flag = "urs.png";
+				else if (name.equals("Zambia"))
+					flag = "zam.png";
+				else
+					flag = "what.png";
+				CountryMedals newCountry = new CountryMedals(d.country.get(0), loadImage(flag));
+				if (d.medal == 0)
+					newCountry.incrementGold();
+				else if (d.medal == 1)
+					newCountry.incrementSilver();
+				else if (d.medal == 2)
+					newCountry.incrementBronze();
+				countryMedalsList.add(newCountry);
+			}
+		}
 		
 		grapheme.begin(allDots);
 		grapheme.plant(yscale);
