@@ -106,10 +106,17 @@ public class Olympia extends PApplet {
 		int year = Integer.parseInt(sub[0]);
 		String athlete = sub[2];
 		String metal = sub[3];
-		String country = setCountry(sub[4]);
-		float score = Float.parseFloat(sub[5]);
-		/*if(score == 0)
-			return;*/
+		String country = setCountry(sub[4].trim());
+		String stringScore = sub[5];
+		float score;
+		
+		if (stringScore.contains(":")) {
+			String[] tokens = stringScore.split(":");
+			int minutes = Integer.parseInt(tokens[0]);
+			float seconds = Float.parseFloat(tokens[1]);
+			score = minutes*60 + seconds;
+		} else
+			score = Float.parseFloat(stringScore);
 		
 		int medal;
 		if(metal.trim().equals("GOLD")) {
@@ -142,7 +149,7 @@ public class Olympia extends PApplet {
 		list.setBarHeight(15);
 		list.setWidth(150);
 		list.addItem("Men's Discus Throw", 0);
-		//list.addItem("Men's 5000m Track", 1);
+		list.addItem("Men's 5000m Track", 1);
 		list.addItem("Men's 400m Hurdles", 2);
 		list.addItem("Women's 400M Swimming", 3);
 		//list.addItem("Women's 100M Freestyle Swimming", 4);
