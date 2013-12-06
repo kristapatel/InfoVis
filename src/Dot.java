@@ -76,7 +76,6 @@ public class Dot {
 	
 	public void highlight()
 	{
-		// highlighted = !highlighted;
 		papa.strokeWeight(2f);
 		papa.fill(0xFFFF0000);	// colors[medal], 1);
 		papa.ellipse(x, y, diameter, diameter);

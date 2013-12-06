@@ -330,22 +330,31 @@ public class Graphrame {
 		
 		if (drawGold){
 			papa.beginShape();
-			for(int i : gindex)
-				papa.vertex(metalli[i].x, metalli[i].y);
+			for(int i : gindex){
+				if (metalli[i].score != 0){
+					papa.vertex(metalli[i].x, metalli[i].y);
+				}
+			}
 			papa.endShape();
 		}
 		
 		if (drawSilver){
 			papa.beginShape();
-			for(int i : sindex)
-				papa.vertex(metalli[i].x, metalli[i].y);
+			for(int i : sindex){
+				if (metalli[i].score != 0){
+					papa.vertex(metalli[i].x, metalli[i].y);
+				}
+			}
 			papa.endShape();
 		}
 		
 		if (drawBronze){
 			papa.beginShape();
-			for(int i : bindex)
-				papa.vertex(metalli[i].x, metalli[i].y);
+			for(int i : bindex){
+				if (metalli[i].score != 0){
+					papa.vertex(metalli[i].x, metalli[i].y);
+				}
+			}
 			papa.endShape();
 		}
 	}
@@ -355,21 +364,27 @@ public class Graphrame {
 		if (drawGold){
 			papa.beginShape();
 			for (int i : gindex){
-				metalli[i].draw();
+				if (metalli[i].score != 0){
+					metalli[i].draw();
+				}
 			}
 		}
 		
 		if (drawSilver){
 			papa.beginShape();
 			for (int i : sindex){
-				metalli[i].draw();
+				if (metalli[i].score != 0){
+					metalli[i].draw();
+				}
 			}
 		}
 		
 		if (drawBronze){
 			papa.beginShape();
 			for (int i : bindex){
-				metalli[i].draw();
+				if (metalli[i].score != 0){
+					metalli[i].draw();
+				}
 			}
 		}
 	}
