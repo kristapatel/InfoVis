@@ -250,6 +250,8 @@ public class Olympia extends PApplet {
 					flag = "tan.png";
 				else if (name.equals("Tunisia"))
 					flag = "tun.png";
+				else if (name.equals("Uganda"))
+					flag = "uga.png";
 				else if (name.equals("Soviet Union"))
 					flag = "urs.png";
 				else if (name.equals("Zambia"))
@@ -486,6 +488,9 @@ public class Olympia extends PApplet {
 		}
 		else if (countryCode.equals("TUN")){
 			return "Tunisia";
+		}
+		else if (countryCode.equals("UGA")) {
+			return "Uganda";
 		}
 		else if (countryCode.equals("URS")){
 			return "Soviet Union";
