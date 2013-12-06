@@ -56,7 +56,7 @@ public class Olympia extends PApplet {
 			image(country.getFlag(), country.x, country.y);
 			text(country.getGold(), 68 + i*45, 801);
 			text(country.getSilver(), 68 + i*45, 841);
-			text(country.getSilver(), 68 + i*45, 881);
+			text(country.getBronze(), 68 + i*45, 881);
 			
 			if ((mouseX >= country.x) && (mouseX <= country.x+country.getWidth())
 					&& (mouseY >= country.y) && (mouseY <= country.y+country.getHeight())) {
@@ -258,12 +258,14 @@ public class Olympia extends PApplet {
 					flag = "what.png";
 				CountryMedals newCountry = new CountryMedals(d.country.get(0), loadImage(flag),
 						55+(countryMedalsList.size()*45), 760);
+				if (d.country.get(0).equals("Colombia"))
+					System.out.println("COL.... medal= " + d.medal);
 				if (d.medal == 0)
-					newCountry.incrementGold();
+					newCountry.setGold(1);
 				else if (d.medal == 1)
-					newCountry.incrementSilver();
+					newCountry.setSilver(1);
 				else if (d.medal == 2)
-					newCountry.incrementBronze();
+					newCountry.setBronze(1);
 				countryMedalsList.add(newCountry);
 			}
 		}
