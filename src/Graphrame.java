@@ -42,7 +42,7 @@ public class Graphrame {
 	Dot[] metalli;
 	int[] gindex, sindex, bindex;
 	
-	ArrayList<Dot> highlightedDots = new ArrayList<Dot>();
+	public ArrayList<Dot> highlightedDots = new ArrayList<Dot>();
 	Dot mouseDot = null;
 
 	boolean drawGold = true;
