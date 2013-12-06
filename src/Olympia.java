@@ -64,7 +64,6 @@ public class Olympia extends PApplet {
 		allDots = new ArrayList<Dot>();
 		
 		String[] loads = loadStrings(filename);
-		grapheme.title = loads[0].split(",")[1]; //keep this for now
 		
 		//The score unit is used for drawing the y-axis ticks and more descriptive titles
 		if (filename.equals("tf_discus_men.csv")){
@@ -74,6 +73,17 @@ public class Olympia extends PApplet {
 		else if (filename.equals("tf_400m_women.csv")){
 			grapheme.scoreUnit = "s";
 			grapheme.title = "Women's 400m Swimming";
+		}
+		else if (filename.equals("track_5000m_men.csv")){
+			grapheme.scoreUnit = "s";
+			grapheme.title = "Men's 5000m";
+		}
+		else if (filename.equals("track_400m_hurdles_men.csv")){
+			grapheme.scoreUnit = "s";
+			grapheme.title = "Men's 400m Hurdles";
+		}
+		else{
+			grapheme.title = loads[0].split(",")[1];
 		}
 		grapheme.xLower = Integer.parseInt(loads[0].substring(0, 4));
 		grapheme.xUpper = Integer.parseInt(loads[loads.length-1].substring(0, 4));
@@ -98,21 +108,19 @@ public class Olympia extends PApplet {
 		String metal = sub[3];
 		String country = setCountry(sub[4]);
 		float score = Float.parseFloat(sub[5]);
-	
-		if(score == 0)
-			return;
+		/*if(score == 0)
+			return;*/
 		
-		int medal;		
-		if(metal.equals("GOLD")) {
+		int medal;
+		if(metal.trim().equals("GOLD")) {
 			medal = 0;
 		}
-		else if(metal.equals("SILVER")) {
+		else if(metal.trim().equals("SILVER")) {
 			medal = 1;
 		}
 		else {
 			medal = 2;
 		}
-		
 		for(Dot d : allDots) {
 			if(d.year == year && d.medal == medal) {
 				d.addAthlete(athlete, country);
@@ -134,8 +142,10 @@ public class Olympia extends PApplet {
 		list.setBarHeight(15);
 		list.setWidth(150);
 		list.addItem("Men's Discus Throw", 0);
-		list.addItem("Women's 400M Swimming", 1);
-		list.addItem("Women's 100M Freestyle Swimming", 2);
+		//list.addItem("Men's 5000m Track", 1);
+		list.addItem("Men's 400m Hurdles", 2);
+		list.addItem("Women's 400M Swimming", 3);
+		//list.addItem("Women's 100M Freestyle Swimming", 4);
 		list.setColorBackground(color(60));
 		list.setColorActive(color(255, 128));
 	}
@@ -150,13 +160,18 @@ public class Olympia extends PApplet {
 		  if (event.isGroup()) {
 		    // check if the Event was triggered from a ControlGroup
 			  if (event.getGroup().getValue() == 0){
-				  grapheme.scoreUnit = "meters";
 				  loadSet("tf_discus_men.csv");
 			  }
 			  else if (event.getGroup().getValue() == 1){
-				  loadSet("tf_400m_women.csv");
+				  loadSet("track_5000m_men.csv");
 			  }
 			  else if (event.getGroup().getValue() == 2){
+				  loadSet("track_400m_hurdles_men.csv");
+			  }
+			  else if (event.getGroup().getValue() == 3){
+				  loadSet("tf_400m_women.csv");
+			  }
+			  else if (event.getGroup().getValue() == 4){
 				  loadSet("swim_100m_free_women.csv");
 			  }
 		  } 

@@ -67,10 +67,8 @@ public class Graphrame {
 		/*for (Dot d : metalli){
 			System.out.println(d.toString());
 		}*/
-		
 		int gi = 0, si = 0, bi = 0, fi = 0;
 		int size = metalli.length;
-		
 		gindex = new int[size/3];
 		sindex = new int[size/3];
 		bindex = new int[size/3];
@@ -156,8 +154,10 @@ public class Graphrame {
 	 */
 	private void plantDot(Dot dot)
 	{
-		dot.x = xTicks[indexOfYear(dot.year)];
-		dot.y = (y + h)	- (dot.score - lbound)/(ubound - lbound)*(y + h - yTicks[yTicks.length - 1]);
+		if (dot.score != 0){
+			dot.x = xTicks[indexOfYear(dot.year)];
+			dot.y = (y + h)	- (dot.score - lbound)/(ubound - lbound)*(y + h - yTicks[yTicks.length - 1]);
+		}
 	}
 	
 	public void highlight()
