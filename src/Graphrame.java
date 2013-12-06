@@ -62,8 +62,9 @@ public class Graphrame {
 	{
 		this.papa = papa;
 		control = new ControlP5(papa);
+		control.setFont(new ControlFont(papa.createFont("Arial", 20), 16));
 		sportList = control.addDropdownList("sportsList");
-		sportList.setPosition(1125, 500);
+		sportList.setPosition(1025, 800);
 		customizeList(sportList);
 		//setUpSlider();
 
@@ -73,6 +74,7 @@ public class Graphrame {
 	public void setUpSlider(){
 		yearSlider = control.addRange("yearSlider");
 		yearSlider.setPosition(1125, 600);
+		yearSlider.setWidth(150);
 		customizeSlider(yearSlider);
 	}
 	
@@ -80,6 +82,7 @@ public class Graphrame {
 		yearSlider = control.addRange("yearSlider");
 		yearSlider.setPosition(1125, 600);
 		customizeSlider(yearSlider);
+		yearSlider.setWidth(150);
 		yearSlider.setRange(min, max);
 		yearSlider.setRangeValues(min, max);
 		yearSlider.setLowValueLabel(((Integer)min).toString());
@@ -602,16 +605,22 @@ public class Graphrame {
 	 */
 	public void customizeList(DropdownList list){
 		list.setBackgroundColor(papa.color(190));
-		list.setItemHeight(20);
-		list.setBarHeight(15);
-		list.setWidth(150);
+		list.setItemHeight(30);
+		list.setBarHeight(30);
+		list.setWidth(250);
+
+		System.out.println(list.isScrollable());
 		list.addItem("Men's Discus Throw", 0);
 		list.addItem("Men's 5000m Track", 1);
 		list.addItem("Men's 400m Hurdles", 2);
 		list.addItem("Women's 400M Swimming", 3);
+		list.addItem("TEST", 4);
 		//list.addItem("Women's 100M Freestyle Swimming", 4);
 		list.setColorBackground(papa.color(60));
 		list.setColorActive(papa.color(255, 128));
+		//list.setScrollbarVisible(true);
+		//list.showScrollbar();
+		//list.scroll(0);
 	}
 	
 	
