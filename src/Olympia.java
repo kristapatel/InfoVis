@@ -116,7 +116,7 @@ public class Olympia extends PApplet {
 		}
 		else if (filename.equals("tf_400m_women.csv")){
 			grapheme.scoreUnit = "s";
-			grapheme.title = "Women's 400m Swimming";
+			grapheme.title = "Women's 400m";
 		}
 		else if (filename.equals("track_5000m_men.csv")){
 			grapheme.scoreUnit = "s";
@@ -466,7 +466,7 @@ public class Olympia extends PApplet {
 		else if (countryCode.equals("POR")){
 			return "Portugal";
 		}
-		else if (countryCode.equals("RSA")){
+		else if (countryCode.equals("RSA") || countryCode.equals("RUS")){
 			return "Russia";
 		}
 		else if (countryCode.equals("SEN")){

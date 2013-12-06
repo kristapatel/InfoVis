@@ -613,7 +613,7 @@ public class Graphrame {
 		list.addItem("Men's Discus Throw", 0);
 		list.addItem("Men's 5000m Track", 1);
 		list.addItem("Men's 400m Hurdles", 2);
-		list.addItem("Women's 400M Swimming", 3);
+		list.addItem("Women's 400M", 3);
 		list.addItem("TEST", 4);
 		//list.addItem("Women's 100M Freestyle Swimming", 4);
 		list.setColorBackground(papa.color(60));
