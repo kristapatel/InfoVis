@@ -190,7 +190,10 @@ public class Olympia extends PApplet {
 	 * @par
 	 */
 	public String setCountry(String countryCode){
-		if (countryCode.equals("ANZ")){
+		if (countryCode.equals("ALG")){
+			return "Algeria";
+		}
+		else if (countryCode.equals("ANZ")){
 			return "Australia/New Zealand";
 		}
 		else if (countryCode.equals("AUS")){
@@ -199,11 +202,20 @@ public class Olympia extends PApplet {
 		else if (countryCode.equals("BAH")){
 			return "Bahamas";
 		}
+		else if (countryCode.equals("BEL")){
+			return "Belgium";
+		}
+		else if (countryCode.equals("BDI")){
+			return "Burundi";
+		}
 		else if (countryCode.equals("BLR")){
 			return "Belarus";
 		}
 		else if (countryCode.equals("BOH")){
 			return "Bohemia";
+		}
+		else if (countryCode.equals("CAN")){
+			return "Canada";
 		}
 		else if (countryCode.equals("COL")){
 			return "Colombia";
@@ -214,8 +226,14 @@ public class Olympia extends PApplet {
 		else if (countryCode.equals("CZE")){
 			return "Czechoslovakia";
 		}
+		else if (countryCode.equals("DOM")){
+			return "Dominican Republic";
+		}
 		else if (countryCode.equals("EST")){
 			return "Estonia";
+		}
+		else if (countryCode.equals("ETH")){
+			return "Ethiopia";
 		}
 		else if (countryCode.equals("FIN")){
 			return "Finland";
@@ -241,11 +259,20 @@ public class Olympia extends PApplet {
 		else if (countryCode.equals("HUN")){
 			return "Hungary";
 		}
+		else if (countryCode.equals("IRL")){
+			return "Ireland";
+		}
 		else if (countryCode.equals("ITA")){
 			return "Italy";
 		}
 		else if (countryCode.equals("JAM")){
 			return "Jamaica";
+		}
+		else if (countryCode.equals("KEN")){
+			return "Kenya";
+		}
+		else if (countryCode.equals("KSA")){
+			return "Saudi Arabia";
 		}
 		else if (countryCode.equals("LTU")){
 			return "Lithuania";
@@ -253,23 +280,56 @@ public class Olympia extends PApplet {
 		else if (countryCode.equals("MEX")){
 			return "Mexico";
 		}
+		else if (countryCode.equals("MAR")){
+			return "Morocco";
+		}
+		else if (countryCode.equals("NED")){
+			return "The Netherlands";
+		}
 		else if (countryCode.equals("NGR")){
 			return "Nigeria";
+		}
+		else if (countryCode.equals("NZL")){
+			return "New Zealand";
+		}
+		else if (countryCode.equals("PHI")){
+			return "Philippines";
 		}
 		else if (countryCode.equals("POL")){
 			return "Poland";
 		}
+		else if (countryCode.equals("POR")){
+			return "Portugal";
+		}
 		else if (countryCode.equals("RSA")){
 			return "Russia";
 		}
+		else if (countryCode.equals("SEN")){
+			return "Senegal";
+		}
+		else if (countryCode.equals("SRI")){
+			return "Sri Lanka";
+		}
+		else if (countryCode.equals("SUI")){
+			return "Switzerland";
+		}
 		else if (countryCode.equals("SWE")){
 			return "Sweden";
+		}
+		else if (countryCode.equals("TAN")){
+			return "Tanzania";
+		}
+		else if (countryCode.equals("TUN")){
+			return "Tunisia";
 		}
 		else if (countryCode.equals("URS")){
 			return "Soviet Union";
 		}
 		else if (countryCode.equals("USA")){
 			return "United States of America";
+		}
+		else if (countryCode.equals("ZAM")){
+			return "Zambia";
 		}
 		else{
 			return countryCode;
