@@ -82,6 +82,8 @@ public class Graphrame {
 		customizeSlider(yearSlider);
 		yearSlider.setRange(min, max);
 		yearSlider.setRangeValues(min, max);
+		yearSlider.setLowValueLabel(((Integer)min).toString());
+		yearSlider.setHighValueLabel(((Integer)max).toString());
 	}
 	
 	public void begin(ArrayList<Dot> dots)
@@ -559,6 +561,8 @@ public class Graphrame {
 		
 		slider.setRange(1900, 2008);
 		slider.setRangeValues(1900, 2008);
+		slider.setHighValueLabel("2008");
+		slider.setLowValueLabel("1900");
 		slider.setHeight(100);
 
 
@@ -584,6 +588,9 @@ public class Graphrame {
 
 		xUpper = sliderMax;
 		xLower = sliderMin;
+		yearSlider.setHighValueLabel(((Integer)sliderMax).toString());
+		yearSlider.setLowValueLabel(((Integer)sliderMin).toString());
+
 		rangeVals[0] = xLower;
 		rangeVals[1] = xUpper;
 		return rangeVals;
