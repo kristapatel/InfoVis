@@ -155,10 +155,14 @@ public class Olympia extends PApplet {
 						flag = "blr.png";
 					else if (name.equals("Bohemia"))
 						flag = "boh.png";
+					else if (name.equals("Brazil"))
+						flag = "bra.png";
 					else if (name.equals("Canada"))
 						flag = "can.png";
 					else if (name.equals("Colombia"))
 						flag = "col.png";
+					else if (name.equals("Croatia"))
+						flag = "cro.png";
 					else if (name.equals("Cuba"))
 						flag = "cub.png";
 					else if (name.equals("Czechoslovakia"))
