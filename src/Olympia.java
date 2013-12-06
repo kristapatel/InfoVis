@@ -274,6 +274,10 @@ public class Olympia extends PApplet {
 			grapheme.scoreUnit = "s";
 			grapheme.title = "Men's 400m Hurdles";
 		}
+		else if (filename.equals("swim_50m_free_men.csv")){
+			grapheme.scoreUnit = "s";
+			grapheme.title = "Men's 50m Freestyle Swim";
+		}
 		else{
 			grapheme.title = loads[0].split(",")[1];
 		}
@@ -358,10 +362,10 @@ public class Olympia extends PApplet {
 				  loadSet("track_400m_hurdles_men.csv");
 			  }
 			  else if (event.getGroup().getValue() == 3){
-				  loadSet("tf_400m_women.csv");
+				  loadSet("swim_50m_free_men.csv");
 			  }
 			  else if (event.getGroup().getValue() == 4){
-				  loadSet("swim_100m_free_women.csv");
+				  loadSet("tf_400m_women.csv");
 			  }
 		  } 
 
@@ -396,11 +400,17 @@ public class Olympia extends PApplet {
 		else if (countryCode.equals("BOH")){
 			return "Bohemia";
 		}
+		else if (countryCode.equals("BRA")){
+			return "Brazil";
+		}
 		else if (countryCode.equals("CAN")){
 			return "Canada";
 		}
 		else if (countryCode.equals("COL")){
 			return "Colombia";
+		}
+		else if (countryCode.equals("CRO")){
+			return "Croatia";
 		}
 		else if (countryCode.equals("CUB")){
 			return "Cuba";

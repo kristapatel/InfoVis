@@ -64,7 +64,7 @@ public class Graphrame {
 		control = new ControlP5(papa);
 		control.setFont(new ControlFont(papa.createFont("Arial", 20), 16));
 		sportList = control.addDropdownList("sportsList");
-		sportList.setPosition(1025, 800);
+		sportList.setPosition(50, 50);
 		customizeList(sportList);
 		//setUpSlider();
 
@@ -609,12 +609,12 @@ public class Graphrame {
 		list.setBarHeight(30);
 		list.setWidth(250);
 
-		System.out.println(list.isScrollable());
 		list.addItem("Men's Discus Throw", 0);
 		list.addItem("Men's 5000m Track", 1);
 		list.addItem("Men's 400m Hurdles", 2);
-		list.addItem("Women's 400M", 3);
-		list.addItem("TEST", 4);
+		list.addItem("Men's 50m Freestyle Swim", 3);
+		list.addItem("Women's 400M", 4);
+		//list.addItem("TEST", 4);
 		//list.addItem("Women's 100M Freestyle Swimming", 4);
 		list.setColorBackground(papa.color(60));
 		list.setColorActive(papa.color(255, 128));
