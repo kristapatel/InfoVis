@@ -561,9 +561,13 @@ public class Graphrame {
 		}
 	}
 	
-	public void checkSlider(){
+	public int[] checkSlider(){
+		int[] rangeVals = new int[2];
 		xUpper = (int) yearSlider.getHighValue();
 		xLower = (int) yearSlider.getLowValue();
+		rangeVals[0] = xLower;
+		rangeVals[1] = xUpper;
+		return rangeVals;
 	}
 	/**
 	 * This method formats the dropdown list.

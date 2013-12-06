@@ -53,8 +53,25 @@ public class Olympia extends PApplet {
 	
 	public void mouseReleased(){
 		grapheme.checkMenu();
-		grapheme.checkSlider();
+		int[] ranges = grapheme.checkSlider();
+		checkDots(ranges[0], ranges[1]);
 
+	}
+	
+	public void checkDots(int yearLower, int yearUpper){
+		for (Dot d : allDots){
+			if (d.year < yearLower || d.year > yearUpper){
+				d.drawn = false;
+			}
+			else{
+				d.drawn = true;
+			}
+			if (d.score == 0){
+				d.drawn = false;
+			}
+			
+		}
+		
 	}
 	
 	public void loadSet(String filename)

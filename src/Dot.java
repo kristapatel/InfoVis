@@ -50,7 +50,6 @@ public class Dot {
 		this.medal = medal;
 		this.country.add(country);
 		this.score = score;
-		this.drawn = drawn;
 		
 		return this;
 	}
