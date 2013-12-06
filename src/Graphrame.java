@@ -13,14 +13,7 @@ import controlP5.*;
 public class Graphrame {
 
 	PApplet papa;	// reference to Olympia to allow use of Processing library
-	
-	/*static int[] summers = { 1900, 1904, 1908, 1912, 1916, 1920, 1924, 
-							 1928, 1932, 1936, 1940, 1944, 1948, 1952, 
-							 1956, 1960, 1964, 1968, 1972, 1976, 1980, 
-							 1984, 1988, 1992, 1996, 2000, 2004, 2008 };	// ignore 1906
-	
-	static int[] winters = { 1924, 1928, 1932, 1936, 1940, 1944, 1948, 1952, 1956, 1960, 1964, 
-							 1968, 1972, 1976, 1980, 1984, 1988, 1992, 1994, 1998, 2002, 2006 };*/ 
+	 
 	
 	float x = 50, 
 		  y = 100, 
@@ -28,6 +21,7 @@ public class Graphrame {
 		  w = 1000;
 	
 	int[] years;	// set with xTicks
+	boolean[] yearsDrawn; //if the years should be drawn
 	
 	String scoreUnit; //the unit the score is in (e.g. meters or s)
 	
@@ -40,6 +34,7 @@ public class Graphrame {
 	float[] scores;
 	
 	float[] xTicks, yTicks;
+	ArrayList<Float> xTicks2 = new ArrayList<Float>();
 	float[] yLabels;		// set with yTicks
 	
 	String title = "";
@@ -55,6 +50,7 @@ public class Graphrame {
 	boolean drawBronze = true;
 	Range yearSlider;
 	DropdownList sportList;
+	ControlP5 control;
 	
 
 	/**
@@ -65,15 +61,27 @@ public class Graphrame {
 	public Graphrame(PApplet papa)
 	{
 		this.papa = papa;
-		ControlP5 control = new ControlP5(papa);
+		control = new ControlP5(papa);
 		sportList = control.addDropdownList("sportsList");
-		yearSlider = control.addRange("yearSlider");
 		sportList.setPosition(1125, 500);
-		yearSlider.setPosition(1125, 600);
 		customizeList(sportList);
+		//setUpSlider();
+
+
+	}
+	
+	public void setUpSlider(){
+		yearSlider = control.addRange("yearSlider");
+		yearSlider.setPosition(1125, 600);
 		customizeSlider(yearSlider);
-
-
+	}
+	
+	public void setUpSlider(int min, int max){
+		yearSlider = control.addRange("yearSlider");
+		yearSlider.setPosition(1125, 600);
+		customizeSlider(yearSlider);
+		yearSlider.setRange(min, max);
+		yearSlider.setRangeValues(min, max);
 	}
 	
 	public void begin(ArrayList<Dot> dots)
@@ -119,19 +127,23 @@ public class Graphrame {
 	private void plantXTicks()
 	{
 		
+		
 		int numTicks = (xUpper - xLower)/4 + 1;
 		float gap = w/numTicks;
 		float xPos = x;
 		
 		xTicks = new float[numTicks]; //this is an array of floats with the positions of the tickmarks for each year
 		years = new int[numTicks];	//this is an arrays of ints with the years 
-
+		
 		for(int i = 0; i < numTicks; i++)
 		{
 			xPos += gap;
 			xTicks[i] = xPos;
 			years[i] = xLower + 4*i;
 		}
+
+		
+
 
 	}
 	
@@ -169,7 +181,7 @@ public class Graphrame {
 	 */
 	private void plantDot(Dot dot)
 	{
-		if (dot.score != 0){
+		if (dot.score != 0 && dot.year >= xLower && dot.year <= xUpper){
 			dot.x = xTicks[indexOfYear(dot.year)];
 			dot.y = (y + h)	- (dot.score - lbound)/(ubound - lbound)*(y + h - yTicks[yTicks.length - 1]);
 		}
@@ -324,6 +336,7 @@ public class Graphrame {
 		papa.fill(0);
 		papa.textSize(11);
 		int year = xLower;
+		int yearHigh = xUpper;
 
 		for(int i = 0; i < xTicks.length; i++)
 		{
@@ -543,9 +556,11 @@ public class Graphrame {
 	}
 	
 	public void customizeSlider(Range slider){
+		
 		slider.setRange(1900, 2008);
 		slider.setRangeValues(1900, 2008);
 		slider.setHeight(100);
+
 
 	}
 	
@@ -562,9 +577,13 @@ public class Graphrame {
 	}
 	
 	public int[] checkSlider(){
+		int sliderMin = Math.round((int)yearSlider.getLowValue()/4)*4;
+		int sliderMax = Math.round((int)yearSlider.getHighValue()/4)*4;		
 		int[] rangeVals = new int[2];
-		xUpper = (int) yearSlider.getHighValue();
-		xLower = (int) yearSlider.getLowValue();
+
+
+		xUpper = sliderMax;
+		xLower = sliderMin;
 		rangeVals[0] = xLower;
 		rangeVals[1] = xUpper;
 		return rangeVals;

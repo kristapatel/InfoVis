@@ -35,13 +35,13 @@ public class Olympia extends PApplet {
 		textSize(11);
 		loadSet("tf_discus_men.csv");
 		scoreMode = true;
+
 	}
 	
 	public void draw()
 	{
 		background(255);
 		grapheme.draw();
-		//grapheme.drawSlider(yearSlider);
 	}
 	
 	public void mouseMoved()
@@ -55,6 +55,7 @@ public class Olympia extends PApplet {
 		grapheme.checkMenu();
 		int[] ranges = grapheme.checkSlider();
 		checkDots(ranges[0], ranges[1]);
+		grapheme.plant(yscale);
 
 	}
 	
@@ -103,6 +104,7 @@ public class Olympia extends PApplet {
 		}
 		grapheme.xLower = Integer.parseInt(loads[0].substring(0, 4));
 		grapheme.xUpper = Integer.parseInt(loads[loads.length-1].substring(0, 4));
+		grapheme.setUpSlider(Integer.parseInt(loads[0].substring(0, 4)), Integer.parseInt(loads[loads.length-1].substring(0, 4)));
 		
 		
 		for(String sub : loads)
