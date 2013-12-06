@@ -142,10 +142,6 @@ public class Olympia extends PApplet {
 			parser(sub.split(","));
 		
 		for(int m=0; m<allDots.size(); m++) {
-//			Dot d = allDots.get(0);
-//				for (int i = 0; i < d.country.size(); i++) {
-//					System.out.println("size is: " + d.country.size() + "      and index " + i + " is " + d.country.get(i));
-//				}
 			Dot d = allDots.get(m);
 			boolean alreadyHaveCountry = false;
 			String country = d.country.get(0);
@@ -264,8 +260,6 @@ public class Olympia extends PApplet {
 					flag = "what.png";
 				CountryMedals newCountry = new CountryMedals(d.country.get(0), loadImage(flag),
 						55+(countryMedalsList.size()*45), 760);
-				if (d.country.get(0).equals("Colombia"))
-					System.out.println("COL.... medal= " + d.medal);
 				if (d.medal == 0)
 					newCountry.setGold(1);
 				else if (d.medal == 1)
