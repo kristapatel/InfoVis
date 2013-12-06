@@ -61,8 +61,13 @@ public class Olympia extends PApplet {
 			if ((mouseX >= country.x) && (mouseX <= country.x+country.getWidth())
 					&& (mouseY >= country.y) && (mouseY <= country.y+country.getHeight())) {
 				for (Dot d: allDots) {
-					if (d.country.get(0).equals(country.getCountry()))
-						grapheme.highlightedDots.add(d);
+					if (d.country.get(0).equals(country.getCountry())) {
+						int[] ranges = grapheme.checkSlider();
+						checkDots(ranges[0], ranges[1]);
+						if (d.drawn)
+							grapheme.highlightedDots.add(d);
+					}
+						
 				}
 				strokeWeight(1f);
 				line(mouseX, mouseY, mouseX + 20, mouseY - 20);
